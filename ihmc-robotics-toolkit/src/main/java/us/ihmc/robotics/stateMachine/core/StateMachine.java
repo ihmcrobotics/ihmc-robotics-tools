@@ -213,6 +213,7 @@ public class StateMachine<K extends Enum<K>, S extends State>
 
       StateTransition<K> stateTransition = stateTransitions.get(currentStateKey.getEnumValue());
 
+      
       if (stateTransition == null)
       {
          callPostTransitionCallbacks();
@@ -254,7 +255,7 @@ public class StateMachine<K extends Enum<K>, S extends State>
       {
          S currentState = states.get(currentStateKey.getEnumValue());
          if (currentState != null)
-            currentState.onExit();
+            currentState.onExit(clock.getTimeInCurrentState());
       }
 
       S nextState = getState(nextStateKey);
