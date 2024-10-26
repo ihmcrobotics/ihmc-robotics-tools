@@ -6,18 +6,22 @@ plugins {
 }
 
 ihmc {
-   loadProductProperties("../product.properties")
-   
+   group = "us.ihmc"
+   version = "0.1.0"
+   vcsUrl = "https://github.com/ihmcrobotics/ihmc-robotics-tools"
+   openSource = true
+   maintainer = "Robert Griffin"
+
    configureDependencyResolution()
    configurePublications()
 }
 
 mainDependencies {
-   api("us.ihmc:ihmc-commons-utils:source")
-   api("us.ihmc:euclid-update-frame:source")
-   api("us.ihmc:ihmc-yovariables:0.12.2")
-   api("us.ihmc:ihmc-yovariables-filters:source")
-   api("us.ihmc:ihmc-graphics-description-update:source")
+   api("us.ihmc:ihmc-commons:0.33.0")
+   api("us.ihmc:euclid-frame:0.22.0")
+   api("us.ihmc:ihmc-yovariables:0.13.1")
+   api("us.ihmc:ihmc-yovariables-filters:0.13.1")
+   api("us.ihmc:ihmc-graphics-description:0.25.1")
 }
 
 visualizersDependencies{
@@ -27,4 +31,5 @@ visualizersDependencies{
 
 testDependencies {
    api("us.ihmc:ihmc-commons-testing:0.32.0")
+   api("com.google.guava:guava:18.0")
 }

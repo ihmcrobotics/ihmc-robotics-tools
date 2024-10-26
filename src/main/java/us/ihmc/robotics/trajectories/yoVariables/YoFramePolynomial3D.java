@@ -1,13 +1,14 @@
-package us.ihmc.robotics.trajectories.core;
+package us.ihmc.robotics.trajectories.yoVariables;
 
 import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameVector3DReadOnly;
-import us.ihmc.euclid.referenceFrame.tools.EuclidFrameMissingFactories;
+import us.ihmc.euclid.referenceFrame.tools.EuclidFrameFactories;
 import us.ihmc.robotics.trajectories.interfaces.FramePolynomial3DBasics;
+import us.ihmc.yoVariables.registry.YoRegistry;
 
 /**
- * {@code FramePolynomial3D} provides a frame based wrapper around {@link Polynomial3D}, making the polynomial expressible in a specific frame.
+ * {@code YoFramePolynomial3D} provides a frame based wrapper around {@link YoPolynomial3D}, making the polynomial expressible in a specific frame.
  * <p>
  * This frame can be set at construction, or changed without modifying the underlying data by calling {@link #setReferenceFrame(ReferenceFrame)}, as well as
  * changed and changing the coefficients to matching the changed frame through {@link #changeFrame(ReferenceFrame)}.
@@ -19,7 +20,7 @@ import us.ihmc.robotics.trajectories.interfaces.FramePolynomial3DBasics;
  *
  * @author Robert Griffin
  */
-public class FramePolynomial3D extends Polynomial3D implements FramePolynomial3DBasics
+public class YoFramePolynomial3D extends YoPolynomial3D implements FramePolynomial3DBasics
 {
    private ReferenceFrame referenceFrame;
 
@@ -27,15 +28,15 @@ public class FramePolynomial3D extends Polynomial3D implements FramePolynomial3D
    private final FrameVector3DReadOnly frameVelocity;
    private final FrameVector3DReadOnly frameAcceleration;
 
-   public FramePolynomial3D(int maximumNumberOfCoefficients, ReferenceFrame referenceFrame)
+   public YoFramePolynomial3D(String name, int maximumNumberOfCoefficients, ReferenceFrame referenceFrame, YoRegistry registry)
    {
-      super(maximumNumberOfCoefficients);
+      super(name, maximumNumberOfCoefficients, registry);
 
       this.referenceFrame = referenceFrame;
 
-      framePosition = EuclidFrameMissingFactories.newLinkedFramePoint3DReadOnly(this, super.getPosition());
-      frameVelocity = EuclidFrameMissingFactories.newLinkedFrameVector3DReadOnly(this, super.getVelocity());
-      frameAcceleration = EuclidFrameMissingFactories.newLinkedFrameVector3DReadOnly(this, super.getAcceleration());
+      framePosition = EuclidFrameFactories.newLinkedFramePoint3DReadOnly(this, super.getPosition());
+      frameVelocity = EuclidFrameFactories.newLinkedFrameVector3DReadOnly(this, super.getVelocity());
+      frameAcceleration = EuclidFrameFactories.newLinkedFrameVector3DReadOnly(this, super.getAcceleration());
    }
 
    @Override
