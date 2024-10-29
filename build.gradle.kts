@@ -24,11 +24,23 @@ mainDependencies {
    api("us.ihmc:ihmc-graphics-description:0.25.1")
 }
 
+jointKinematicsDependencies {
+   api(ihmc.sourceSetProject("main"))
+   api("us.ihmc:ihmc-commons:0.33.0")
+   api("us.ihmc:euclid-frame:0.22.0")
+   api("us.ihmc:ihmc-yovariables:0.13.1")
+   api("us.ihmc:ihmc-yovariables-filters:0.13.1")
+   api("us.ihmc:ihmc-graphics-description:0.25.1")
+}
+
 visualizersDependencies{
    api(ihmc.sourceSetProject("main"))
    api("jgraph:jgraph:5.13.0.0")
 }
 
 testDependencies {
+   api(ihmc.sourceSetProject("joint-kinematics"))
    api("us.ihmc:ihmc-commons-testing:0.34.0")
+   api("us.ihmc:euclid:0.22.0")
+   api("org.apache.commons:commons-math3:3.6.1")
 }
