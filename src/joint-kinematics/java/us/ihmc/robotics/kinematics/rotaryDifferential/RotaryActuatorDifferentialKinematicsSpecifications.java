@@ -54,9 +54,14 @@ public interface RotaryActuatorDifferentialKinematicsSpecifications
    boolean isTheFirstJointRoll();
 
    /**
-    * This is the total length of the tie rod, which goes from the center of one rod end to the center of the other rod end.
+    * This is the total length of the left tie rod, which goes from the center of one rod end to the center of the other rod end.
     */
-   double getTieRodLength();
+   double getLeftTieRodLength();
+
+   /**
+    * This is the total length of the right tie rod, which goes from the center of one rod end to the center of the other rod end.
+    */
+   double getRightTieRodLength();
 
    /**
     * @return lower joint limit in radians for the first joint, assuming the second joint is ignored (box constraints).
