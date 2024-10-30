@@ -71,7 +71,7 @@ public abstract class RotaryActuatorDifferentialForwardKinematicsTest
       EuclidFrameTestTools.assertEquals(rightActuatorRodEndPositionExpected, rightActuatorRodEndPosition, EPSILON);
 
       // Test that the distance between the two rod ends is correct
-      assertEquals(kinematicsSpecifications.getTieRodLength(), leftActuatorRodEndPosition.distance(leftBaseRodEnd), EPSILON);
-      assertEquals(kinematicsSpecifications.getTieRodLength(), rightActuatorRodEndPosition.distance(rightBaseRodEnd), EPSILON);
+      assertEquals(kinematicsSpecifications.getLeftTieRodLength(), leftActuatorRodEndPosition.distance(leftBaseRodEnd), EPSILON);
+      assertEquals(kinematicsSpecifications.getRightTieRodLength(), rightActuatorRodEndPosition.distance(rightBaseRodEnd), EPSILON);
    }
 }

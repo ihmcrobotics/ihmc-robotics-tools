@@ -93,7 +93,13 @@ public class RotaryActuatorDifferentialTestHelper
          }
 
          @Override
-         public double getTieRodLength()
+         public double getLeftTieRodLength()
+         {
+            return getEasyGeometryRodEndLength();
+         }
+
+         @Override
+         public double getRightTieRodLength()
          {
             return getEasyGeometryRodEndLength();
          }
