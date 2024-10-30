@@ -30,8 +30,6 @@ linearAlgebraDependencies {
 linearDynamicSystemsDependencies {
    api(ihmc.sourceSetProject("main"))
    api(ihmc.sourceSetProject("linear-algebra"))
-   api("org.ejml:ejml-simple:0.39")
-   api("gov.nist.math:jama:1.0.3")
    api("org.jfree:jfreechart:1.0.19")
 }
 
