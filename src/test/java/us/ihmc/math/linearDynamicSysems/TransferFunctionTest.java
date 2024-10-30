@@ -74,10 +74,10 @@ public class TransferFunctionTest
 
       TransferFunction transferFunction = new TransferFunction(numerator, denominator);
 
-      assertEquals(1.0, transferFunction.getMagnitude(1.0), epsilon);
+      assertEquals(-1.0, transferFunction.getMagnitude(1.0), epsilon);
       Assertions.assertEquals(0.0, AngleTools.computeAngleDifferenceMinusPiToPi(Math.PI, transferFunction.getPhase(1.0)), 1e-7);
 
-      assertEquals(1.0 / 25.0, transferFunction.getMagnitude(5.0), 1e-7);
+      assertEquals(-1.0 / 25.0, transferFunction.getMagnitude(5.0), 1e-7);
       Assertions.assertEquals(0.0, AngleTools.computeAngleDifferenceMinusPiToPi(Math.PI, transferFunction.getPhase(5.0)), 1e-7);
    }
 

@@ -25,6 +25,7 @@ In your build.gradle:
 
 - IHMC's matrix library, which provides tools for manipulating matrices
 - IHMC's Robotics Tools library, which provides sides and other robot structure information
+- IHMC's Native Library Loader
 - EJML Simple, which provides some matrix tools for simple multiplication
 - JAMA, which provides similar tools to EJML Simple
 
