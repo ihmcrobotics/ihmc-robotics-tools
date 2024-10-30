@@ -24,11 +24,17 @@ mainDependencies {
    api("us.ihmc:ihmc-graphics-description:0.25.1")
 }
 
+jointKinematicsDependencies {
+   api(ihmc.sourceSetProject("main"))
+}
+
 visualizersDependencies{
    api(ihmc.sourceSetProject("main"))
    api("jgraph:jgraph:5.13.0.0")
 }
 
 testDependencies {
+   api(ihmc.sourceSetProject("joint-kinematics"))
+   api("org.apache.commons:commons-math3:3.6.1")
    api("us.ihmc:ihmc-commons-testing:0.34.0")
 }
