@@ -1,7 +1,7 @@
 # IHMC Robotics Tools
 ============
 
-Useful tools and utilities that extend Java, Apache Commons Lang, and Apache Commons IO to make them a little more accessible and non-intrusive.
+Useful tools afor generating and describing robot motions. This includes trajectories, state machines, and control output data structures. It also includes tools for computing actuator data from joint data and vice versa given coupled mechanisms.
 
 [![Automated Tests](https://github.com/ihmcrobotics/ihmc-robotics-tools/actions/workflows/gradle-test.yml/badge.svg?branch=develop)](https://github.com/ihmcrobotics/ihmc-robotics-tool/actions/workflows/gradle-test.yml)
 
