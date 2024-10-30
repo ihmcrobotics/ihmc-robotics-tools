@@ -10,7 +10,7 @@ ihmc {
    version = "0.1.0"
    vcsUrl = "https://github.com/ihmcrobotics/ihmc-robotics-tools"
    openSource = true
-   maintainer = "Robert Griffin"
+   maintainer = "Robert Griffin rgriffin@ihmc.org"
    
    configureDependencyResolution()
    configurePublications()
