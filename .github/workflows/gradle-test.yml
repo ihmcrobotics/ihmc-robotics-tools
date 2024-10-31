@@ -18,3 +18,7 @@ jobs:
     uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
     with:
       subproject: 'ihmc-parameter-tuner'
+  trajectory-optimization:
+    uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-trajectory-optimization'
