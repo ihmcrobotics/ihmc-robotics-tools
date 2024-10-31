@@ -6,11 +6,7 @@ plugins {
 }
 
 ihmc {
-   group = "us.ihmc"
-   version = "0.1.1"
-   vcsUrl = "https://github.com/ihmcrobotics/ihmc-robotics-tools"
-   openSource = true
-   maintainer = "Robert Griffin rgriffin@ihmc.org"
+   loadProductProperties("group.product.properties")
    
    configureDependencyResolution()
    configurePublications()

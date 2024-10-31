@@ -14,3 +14,7 @@ permissions:
 jobs:
   gradle-test:
     uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+  parameter-tuner:
+    uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-parameter-tuner'
