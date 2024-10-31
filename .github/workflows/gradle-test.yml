@@ -12,5 +12,19 @@ permissions:
   contents: read
 
 jobs:
-  gradle-test:
+  parameter-tuner:
     uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-parameter-tuner'
+  trajectory-optimization:
+    uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-trajectory-optimization'
+  math:
+    uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-math'
+  robotics-tools:
+    uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-robotics-tools'
