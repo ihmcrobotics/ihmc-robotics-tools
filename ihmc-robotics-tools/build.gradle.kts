@@ -33,4 +33,5 @@ testDependencies {
    api(ihmc.sourceSetProject("joint-kinematics"))
    api("org.apache.commons:commons-math3:3.6.1")
    api("us.ihmc:ihmc-commons-testing:0.34.0")
+   api("com.google.guava:guava:18.0")
 }
