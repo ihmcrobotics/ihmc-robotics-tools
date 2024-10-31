@@ -21,7 +21,7 @@ mainDependencies {
    api("us.ihmc:euclid-frame:0.22.2")
    api("us.ihmc:ihmc-yovariables:0.13.3")
    api("us.ihmc:ihmc-yovariables-filters:0.13.3")
-   api("us.ihmc:ihmc-graphics-description:0.25.1")
+   api("us.ihmc:ihmc-graphics-description:0.25.2")
 }
 
 jointKinematicsDependencies {
