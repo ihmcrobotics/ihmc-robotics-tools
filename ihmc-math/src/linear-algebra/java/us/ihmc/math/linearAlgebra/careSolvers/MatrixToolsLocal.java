@@ -49,10 +49,15 @@ public class MatrixToolsLocal
       return EuclidCoreTools.squareRoot(normSquared(A));
    }
 
+   /**
+    * Clamps the values contained in the matrix A to a minimum value of {@param value}.
+    * @param A
+    * @param value
+    */
    public static void elementWiseMin(DMatrixD1 A, double value)
    {
       for (int i = 0; i < A.getNumElements(); i++)
-         A.set(i, Math.min(A.get(i), value));
+         A.set(i, Math.max(A.get(i), value));
    }
 
    static boolean isZero(DMatrixRMaj P, double epsilon)
