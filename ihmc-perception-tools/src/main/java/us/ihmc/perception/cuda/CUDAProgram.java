@@ -296,7 +296,7 @@ public class CUDAProgram implements AutoCloseable
    private static String getComputeVersion()
    {
       if (!hasCUDA())
-         LogTools.fatal("CUDA Runtime has not been found. To install CUDA Toolkit, follow the instructions in ihmc-perception/README.md.");
+         LogTools.fatal("CUDA Runtime has not been found. To install CUDA Toolkit, follow the instructions here: https://github.com/ihmcrobotics/ihmc-open-robotics-software/blob/develop/ihmc-perception/README.md.");
 
       if (!hasCUDADevice())
          LogTools.fatal("No CUDA device found. An NVIDIA GPU is required to run this code.");
