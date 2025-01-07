@@ -14,6 +14,11 @@ mainDependencies {
    api("us.ihmc:euclid-frame:0.22.2")
    api("us.ihmc:ihmc-commons:0.35.0")
 
+   val openblasVersion = "0.3.23-1.5.9"
+   api("org.bytedeco:openblas:$openblasVersion")
+   api("org.bytedeco:openblas:$openblasVersion:linux-x86_64")
+   api("org.bytedeco:openblas:$openblasVersion:linux-arm64")
+   api("org.bytedeco:openblas:$openblasVersion:windows-x86_64")
    val opencvVersion = "4.7.0-1.5.9"
    api("org.bytedeco:opencv:$opencvVersion")
    api("org.bytedeco:opencv:$opencvVersion:linux-x86_64")
