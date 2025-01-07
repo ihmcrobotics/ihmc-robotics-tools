@@ -12,6 +12,7 @@ ihmc {
 
 mainDependencies {
    api("us.ihmc:euclid-frame:0.22.2")
+   api("us.ihmc:ihmc-commons:0.35.0")
 
    val opencvVersion = "4.7.0-1.5.9"
    api("org.bytedeco:opencv:$opencvVersion")

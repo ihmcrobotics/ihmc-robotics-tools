@@ -28,3 +28,8 @@ jobs:
     uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
     with:
       subproject: 'ihmc-robotics-tools'
+  perception-tools:
+    uses: ihmcrobotics/ihmc-actions/.github/workflows/gradle-test.yml@main
+    with:
+      subproject: 'ihmc-perception-tools'
+      requires-self-hosted: true # Needs GPU
