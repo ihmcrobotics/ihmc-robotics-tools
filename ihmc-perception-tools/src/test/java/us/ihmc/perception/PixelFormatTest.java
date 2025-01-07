@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test;
 import us.ihmc.log.LogTools;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,10 +24,16 @@ public class PixelFormatTest
    private static final Map<PixelFormat, Mat> pixelFormatToImageMap = new HashMap<>();
 
    @BeforeAll
-   public static void initializeImages() throws URISyntaxException, IOException
+   public static void initializeImages() throws IOException
    {  // Initialize images in various pixel formats
-      Path zedColorBGRPath = Path.of(PixelFormatTest.class.getResource("zedColorBGR.raw").toURI());
-      byte[] colorBytes = Files.readAllBytes(zedColorBGRPath);
+      byte[] colorBytes;
+      try (InputStream stream = PixelFormatTest.class.getResourceAsStream("/zedColorBGR.raw"))
+      {
+         if (stream == null)
+            throw new RuntimeException("Could not load test image");
+
+         colorBytes = stream.readAllBytes();
+      }
       bgrImage = new Mat(720, 1280, opencv_core.CV_8UC3, new BytePointer(colorBytes));
       pixelFormatToImageMap.put(PixelFormat.BGR8, bgrImage);
 
