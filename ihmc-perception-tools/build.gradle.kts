@@ -31,4 +31,17 @@ mainDependencies {
    api("org.bytedeco:ffmpeg:$ffmpegVersion:linux-x86_64")
    api("org.bytedeco:ffmpeg:$ffmpegVersion:linux-arm64")
    api("org.bytedeco:ffmpeg:$ffmpegVersion:windows-x86_64")
+   val cudaVersion = "12.3-8.9-1.5.10"
+   api("org.bytedeco:cuda:$cudaVersion") {
+      exclude(group = "org.bytedeco", module = "javacpp")
+   }
+   api("org.bytedeco:cuda:$cudaVersion:linux-x86_64") {
+      exclude(group = "org.bytedeco", module = "javacpp")
+   }
+   api("org.bytedeco:cuda:$cudaVersion:linux-arm64") {
+      exclude(group = "org.bytedeco", module = "javacpp")
+   }
+   api("org.bytedeco:cuda:$cudaVersion:windows-x86_64") {
+      exclude(group = "org.bytedeco", module = "javacpp")
+   }
 }
