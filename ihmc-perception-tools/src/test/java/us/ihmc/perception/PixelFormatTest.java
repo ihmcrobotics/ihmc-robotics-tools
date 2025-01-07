@@ -28,7 +28,7 @@ public class PixelFormatTest
    @BeforeAll
    public static void initializeImages() throws URISyntaxException, IOException
    {  // Initialize images in various pixel formats
-      Path zedColorBGRPath = Path.of(RawImageTest.class.getResource("zedColorBGR.raw").toURI());
+      Path zedColorBGRPath = Path.of(PixelFormatTest.class.getResource("zedColorBGR.raw").toURI());
       byte[] colorBytes = Files.readAllBytes(zedColorBGRPath);
       bgrImage = new Mat(720, 1280, opencv_core.CV_8UC3, new BytePointer(colorBytes));
       pixelFormatToImageMap.put(PixelFormat.BGR8, bgrImage);
