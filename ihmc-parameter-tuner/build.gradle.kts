@@ -18,7 +18,7 @@ mainDependencies {
    api("us.ihmc:ihmc-javafx-toolkit:17-0.22.11")
    api("us.ihmc:simulation-construction-set-utilities:0.25.3")
 
-   var javaFXVersion = "17.0.9"
+   var javaFXVersion = "17.0.8"
    api(ihmc.javaFXModule("base", javaFXVersion))
    api(ihmc.javaFXModule("controls", javaFXVersion))
    api(ihmc.javaFXModule("graphics", javaFXVersion))
