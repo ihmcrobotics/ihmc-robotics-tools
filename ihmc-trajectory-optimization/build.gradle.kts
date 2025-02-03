@@ -25,7 +25,7 @@ examplesDependencies {
    api("us.ihmc:euclid-frame:0.22.2")
    api("us.ihmc:euclid-geometry:0.22.2")
    api("us.ihmc:ihmc-yovariables:0.13.4")
-   api("us.ihmc:simulation-construction-set:17-0.28.3")
+   api("us.ihmc:simulation-construction-set:0.25.3") // SCS1
 }
 
 examplesTestDependencies{
