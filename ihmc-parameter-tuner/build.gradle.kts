@@ -14,15 +14,8 @@ mainDependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
    api("org.apache.commons:commons-math3:3.6.1")
 
-   api("us.ihmc:ihmc-robot-data-logger:0.29.10")
    api("us.ihmc:ihmc-javafx-toolkit:17-0.22.11")
-   api("us.ihmc:simulation-construction-set-utilities:0.25.3")
-
-   var javaFXVersion = "17.0.8"
-   api(ihmc.javaFXModule("base", javaFXVersion))
-   api(ihmc.javaFXModule("controls", javaFXVersion))
-   api(ihmc.javaFXModule("graphics", javaFXVersion))
-   api(ihmc.javaFXModule("fxml", javaFXVersion))
+   api("us.ihmc:scs2-session-visualizer-jfx:17-0.28.3")
 }
 
 testDependencies {
