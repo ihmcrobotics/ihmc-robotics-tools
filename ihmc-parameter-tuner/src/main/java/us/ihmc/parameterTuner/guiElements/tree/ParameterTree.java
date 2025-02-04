@@ -1,9 +1,5 @@
 package us.ihmc.parameterTuner.guiElements.tree;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
@@ -13,7 +9,11 @@ import us.ihmc.parameterTuner.guiElements.GuiParameter;
 import us.ihmc.parameterTuner.guiElements.GuiParameterStatus;
 import us.ihmc.parameterTuner.guiElements.GuiRegistry;
 import us.ihmc.parameterTuner.guiElements.tuners.Tuner;
-import us.ihmc.simulationconstructionset.util.RegularExpression;
+import us.ihmc.scs2.sessionVisualizer.jfx.controllers.RegularExpression;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ParameterTree extends TreeView<ParameterTreeValue>
 {
