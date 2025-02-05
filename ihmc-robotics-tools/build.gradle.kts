@@ -11,7 +11,7 @@ ihmc {
 }
 
 mainDependencies {
-   api("us.ihmc:ihmc-commons:0.35.0")
+   api("us.ihmc:ihmc-commons:0.35.1")
    api("us.ihmc:euclid-frame:0.22.2")
    api("us.ihmc:ihmc-yovariables:0.13.4")
    api("us.ihmc:ihmc-yovariables-filters:0.13.4")
@@ -30,6 +30,6 @@ visualizersDependencies{
 testDependencies {
    api(ihmc.sourceSetProject("joint-kinematics"))
    api("org.apache.commons:commons-math3:3.6.1")
-   api("us.ihmc:ihmc-commons-testing:0.35.0")
+   api("us.ihmc:ihmc-commons-testing:0.35.1")
    api("com.google.guava:guava:18.0")
 }
