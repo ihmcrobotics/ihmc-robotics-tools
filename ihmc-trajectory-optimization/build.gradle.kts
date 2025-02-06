@@ -13,7 +13,7 @@ ihmc {
 mainDependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
    api("us.ihmc:ihmc-commons:0.35.1")
-   api("us.ihmc:ihmc-matrix-library:0.19.1")
+   api("us.ihmc:ihmc-matrix-library:0.19.3")
 }
 
 testDependencies {
