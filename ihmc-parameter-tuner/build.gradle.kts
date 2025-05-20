@@ -14,7 +14,7 @@ mainDependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
    api("org.apache.commons:commons-math3:3.6.1")
 
-   api("us.ihmc:ihmc-robot-data-logger:0.31.4")
+   api("us.ihmc:ihmc-robot-data-logger:0.33.0")
    api("us.ihmc:ihmc-javafx-toolkit:17-0.22.12")
    api("us.ihmc:simulation-construction-set-utilities:0.25.3")
 
