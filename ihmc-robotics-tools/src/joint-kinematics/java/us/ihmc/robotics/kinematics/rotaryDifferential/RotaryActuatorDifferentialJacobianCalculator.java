@@ -3,12 +3,16 @@ package us.ihmc.robotics.kinematics.rotaryDifferential;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.misc.TransposeAlgs_DDRM;
 import org.ejml.dense.row.misc.UnrolledInverseFromMinor_DDRM;
+import us.ihmc.commons.MathTools;
 import us.ihmc.euclid.referenceFrame.FramePoint3D;
 import us.ihmc.euclid.referenceFrame.FrameVector3D;
 import us.ihmc.euclid.referenceFrame.interfaces.FramePoint3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameTuple3DReadOnly;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameVector3DBasics;
 import us.ihmc.euclid.referenceFrame.interfaces.FrameVector3DReadOnly;
+import us.ihmc.euclid.tuple3D.Vector3D;
+import us.ihmc.euclid.tuple3D.interfaces.Tuple3DReadOnly;
+import us.ihmc.log.LogTools;
 import us.ihmc.robotics.kinematics.jointPair.interfaces.JointPairForwardKinematics;
 import us.ihmc.robotics.kinematics.jointPair.interfaces.JointPairJacobian;
 
@@ -44,8 +48,8 @@ public class RotaryActuatorDifferentialJacobianCalculator implements JointPairJa
    private final FrameVector3D leftActuatorForceAboutPitch = new FrameVector3D();
    private final FrameVector3D rightMomentArm = new FrameVector3D();
    private final FrameVector3D leftMomentArm = new FrameVector3D();
-   private final FramePoint3D rightPelvisRodEndAttachmentPosition = new FramePoint3D();
-   private final FramePoint3D leftPelvisRodEndAttachmentPosition = new FramePoint3D();
+   private final FramePoint3D rightBaseRodEndAttachmentPosition = new FramePoint3D();
+   private final FramePoint3D leftBaseRodEndAttachmentPosition = new FramePoint3D();
    private final FramePoint3D rightActuatorRodEndAttachmentPosition = new FramePoint3D();
    private final FramePoint3D leftActuatorRodEndAttachmentPosition = new FramePoint3D();
    private final FrameVector3D rightVectorFromActuatorToRodEnd = new FrameVector3D();
@@ -126,15 +130,15 @@ public class RotaryActuatorDifferentialJacobianCalculator implements JointPairJa
       leftActuatorPosition.setFromReferenceFrame(forwardKinematics.getLeftActuatorFrame());
       rightActuatorRodEndAttachmentPosition.setMatchingFrame(forwardKinematics.getRightActuatorRodEndAttachment());
       leftActuatorRodEndAttachmentPosition.setMatchingFrame(forwardKinematics.getLeftActuatorRodEndAttachment());
-      rightPelvisRodEndAttachmentPosition.setMatchingFrame(forwardKinematics.getRightBaseRodEndAttachment());
-      leftPelvisRodEndAttachmentPosition.setMatchingFrame(forwardKinematics.getLeftBaseRodEndAttachment());
+      rightBaseRodEndAttachmentPosition.setMatchingFrame(forwardKinematics.getRightBaseRodEndAttachment());
+      leftBaseRodEndAttachmentPosition.setMatchingFrame(forwardKinematics.getLeftBaseRodEndAttachment());
 
       // Compute some of the geometry vectors, which are used to compute force along the rod ends
       rightVectorFromActuatorToRodEnd.sub(rightActuatorRodEndAttachmentPosition, rightActuatorPosition);
       leftVectorFromActuatorToRodEnd.sub(leftActuatorRodEndAttachmentPosition, leftActuatorPosition);
 
-      rightRodEndVector.sub(rightPelvisRodEndAttachmentPosition, rightActuatorRodEndAttachmentPosition);
-      leftRodEndVector.sub(leftPelvisRodEndAttachmentPosition, leftActuatorRodEndAttachmentPosition);
+      rightRodEndVector.sub(rightBaseRodEndAttachmentPosition, rightActuatorRodEndAttachmentPosition);
+      leftRodEndVector.sub(leftBaseRodEndAttachmentPosition, leftActuatorRodEndAttachmentPosition);
 
       // get the force along the rod ends resulting from unit torques. This may have some problems
       double rightMotorTorque = 1.0;
@@ -146,14 +150,14 @@ public class RotaryActuatorDifferentialJacobianCalculator implements JointPairJa
       FramePoint3DReadOnly pitchJointPosition = rollIsFirstJoint ? secondJointPosition : firstJointPosition;
 
       // compute the forces about the roll joints by knowing that we have the force, and computing the lever arm
-      rightMomentArm.sub(rightPelvisRodEndAttachmentPosition, rollJointPosition);
-      leftMomentArm.sub(leftPelvisRodEndAttachmentPosition, rollJointPosition);
+      rightMomentArm.sub(rightBaseRodEndAttachmentPosition, rollJointPosition);
+      leftMomentArm.sub(leftBaseRodEndAttachmentPosition, rollJointPosition);
       rightActuatorForceAboutRoll.cross(rightMomentArm, forceAlongRightRodEnd);
       leftActuatorForceAboutRoll.cross(leftMomentArm, forceAlongLeftRodEnd);
 
       // compute the forces about the pitch joints
-      rightMomentArm.sub(rightPelvisRodEndAttachmentPosition, pitchJointPosition);
-      leftMomentArm.sub(leftPelvisRodEndAttachmentPosition, pitchJointPosition);
+      rightMomentArm.sub(rightBaseRodEndAttachmentPosition, pitchJointPosition);
+      leftMomentArm.sub(leftBaseRodEndAttachmentPosition, pitchJointPosition);
       rightActuatorForceAboutPitch.cross(rightMomentArm, forceAlongRightRodEnd);
       leftActuatorForceAboutPitch.cross(leftMomentArm, forceAlongLeftRodEnd);
 
@@ -168,6 +172,8 @@ public class RotaryActuatorDifferentialJacobianCalculator implements JointPairJa
 //      TransposeAlgs_DDRM.standard(jacobianTranspose, jacobian);
    }
 
+   private static final boolean DEBUG = true;
+
    private final FrameVector3D torqueVector = new FrameVector3D();
 
    public void getForceAlongRodEnd(double actuatorTorque,
@@ -176,12 +182,43 @@ public class RotaryActuatorDifferentialJacobianCalculator implements JointPairJa
                                    FrameVector3DReadOnly jointAxis,
                                    FrameVector3DBasics forceVectorToPack)
    {
+      // Remove the portion of the lever arm that is along the joint axis, since we are only interested in the component of the force that is perpendicular to the joint axis.
+      Vector3D leverArm = new Vector3D(rodEndAttachmentVectorFromActuator);
+      double negativeScale = rodEndAttachmentVectorFromActuator.dot(jointAxis);
+      leverArm.scaleSub(negativeScale, jointAxis, leverArm);
+      double leverArmLength = leverArm.norm();
+
+      Vector3D outputForce = new Vector3D();
+      outputForce.cross(leverArm, jointAxis);
+      outputForce.scale(actuatorTorque / (leverArmLength * leverArmLength));
+
+      double rodEndNorm = rodEndVector.norm();
+      double forceAlongRodEnd = outputForce.dot(rodEndVector) / rodEndNorm;
+      forceVectorToPack.set(rodEndVector);
+      forceVectorToPack.scale(forceAlongRodEnd / rodEndNorm);
+
+
+      if (DEBUG)
+      {
+         torqueVector.cross(outputForce, rodEndAttachmentVectorFromActuator);
+         double torqueFromOutputForce = torqueVector.dot(jointAxis);
+
+         double computedTorque = getForceAboutJoint(forceVectorToPack, rodEndAttachmentVectorFromActuator, jointAxis);
+
+      }
+
       // if we apply a unit force along the rod end, we can compute the torque about the actuator. This gives us the ratio of force along the rod end
       // to the actuator. We can then scale that by the amount of torque that is actually being applied.
       torqueVector.cross(rodEndAttachmentVectorFromActuator, rodEndVector);
-      double normalizedTorque = torqueVector.dot(jointAxis);
-      forceVectorToPack.setIncludingFrame(rodEndVector);
-      forceVectorToPack.scale(actuatorTorque / normalizedTorque);
+//      double normalizedTorque = torqueVector.dot(jointAxis);
+//      forceVectorToPack.setIncludingFrame(rodEndVector);
+//      forceVectorToPack.scale(actuatorTorque / normalizedTorque);
+   }
+
+   public double getForceAboutJoint(Tuple3DReadOnly force, Tuple3DReadOnly arm, Tuple3DReadOnly jointAxis)
+   {
+      torqueVector.cross(arm, force);
+      return torqueVector.dot(jointAxis);
    }
 
    public DMatrixRMaj getJacobianMatrix()

@@ -24,7 +24,7 @@ public abstract class RotaryActuatorDifferentialJacobianCalculatorTest
    protected abstract RotaryActuatorDifferentialKinematicsSpecifications getKinematicsSpecification(boolean rollIsFirstJoint);
 
    @Test
-   public void testComputeForceAlonRodEnd()
+   public void testComputeForceAlongRodEnd()
    {
       Random random = new Random(1738L);
 
