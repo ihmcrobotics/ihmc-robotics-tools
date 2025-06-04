@@ -99,7 +99,7 @@ public class FiniteDifferenceJointPairJacobianCalculator implements JointPairJac
       double rightPosition = forwardKinematics.getRightActuatorPosition();
       double leftPosition = forwardKinematics.getLeftActuatorPosition();
 
-      double jointEpsilonForFiniteDifference = 2e-3;
+      double jointEpsilonForFiniteDifference = 1e-3;
 
       forwardKinematics.computeActuatorPositions(roll - jointEpsilonForFiniteDifference, pitch);
 

@@ -16,26 +16,31 @@ public class AdaptiveStepJacobianBasedInversedKinematicsTest
    @Test
    public void testGetLearningRate()
    {
+      double rateForLargeSteps = IKParameters.learningRateForLargeSteps;
+      double rateForSmallSteps = IKParameters.learningRateForSmallSteps;
+      double smallStepThreshold = IKParameters.smallStepSizeThreshold;
+      double largeStepThreshold = IKParameters.largeStepSizeThreshold;
+
       // Test at bounds of the linear interpolation
-      assertEquals(learningRateForSmallSteps, getLearningRate(smallStepSizeThreshold), EPSILON);
-      assertEquals(learningRateForSmallSteps, getLearningRate(-smallStepSizeThreshold), EPSILON);
-      assertEquals(learningRateForLargeSteps, getLearningRate(largeStepSizeThreshold), EPSILON);
-      assertEquals(learningRateForLargeSteps, getLearningRate(-largeStepSizeThreshold), EPSILON);
+      assertEquals(rateForSmallSteps, getLearningRate(smallStepThreshold,smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
+      assertEquals(rateForSmallSteps, getLearningRate(-smallStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
+      assertEquals(rateForLargeSteps, getLearningRate(largeStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
+      assertEquals(rateForLargeSteps, getLearningRate(-largeStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
 
       // outside of bounds
-      assertEquals(learningRateForSmallSteps, getLearningRate(0.1 * smallStepSizeThreshold), EPSILON);
-      assertEquals(learningRateForSmallSteps, getLearningRate(-0.1 * smallStepSizeThreshold), EPSILON);
-      assertEquals(learningRateForLargeSteps, getLearningRate(2.0 * largeStepSizeThreshold), EPSILON);
-      assertEquals(learningRateForLargeSteps, getLearningRate(-2.0 * largeStepSizeThreshold), EPSILON);
+      assertEquals(rateForSmallSteps, getLearningRate(0.1 * smallStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
+      assertEquals(rateForSmallSteps, getLearningRate(-0.1 * smallStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
+      assertEquals(rateForLargeSteps, getLearningRate(2.0 * largeStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
+      assertEquals(rateForLargeSteps, getLearningRate(-2.0 * largeStepThreshold, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
 
       Random random = new Random(1738L);
       for (int iter = 0; iter < 1000; iter++)
       {
          double alpha = RandomNumbers.nextDouble(random, -1.0, 1.0);
-         double stepSize = InterpolationTools.linearInterpolate(smallStepSizeThreshold, largeStepSizeThreshold, alpha);
-         double expectedLearningRate = InterpolationTools.linearInterpolate(learningRateForSmallSteps, learningRateForLargeSteps, Math.abs(alpha));
+         double stepSize = InterpolationTools.linearInterpolate(smallStepThreshold, largeStepThreshold, alpha);
+         double expectedLearningRate = InterpolationTools.linearInterpolate(rateForSmallSteps, rateForLargeSteps, Math.abs(alpha));
 
-         assertEquals(expectedLearningRate, getLearningRate(stepSize), EPSILON);
+         assertEquals(expectedLearningRate, getLearningRate(stepSize, smallStepThreshold, largeStepThreshold, rateForSmallSteps, rateForLargeSteps), EPSILON);
       }
    }
 }
