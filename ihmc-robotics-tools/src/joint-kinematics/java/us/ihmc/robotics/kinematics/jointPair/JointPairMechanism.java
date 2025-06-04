@@ -213,6 +213,16 @@ public class JointPairMechanism
       return inverseKinematics.getResidualSquaredError();
    }
 
+   public double getIKPitchStepSize()
+   {
+      return inverseKinematics.getPitchStepSize();
+   }
+
+   public double getIKRollStepSize()
+   {
+      return inverseKinematics.getRollStepSize();
+   }
+
    public boolean getIKSuccessfullyWarmStarted()
    {
       return inverseKinematics.successfullyWarmStarted();

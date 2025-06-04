@@ -9,15 +9,13 @@ import org.ejml.dense.row.mult.MatrixMatrixMult_DDRM;
 import us.ihmc.commons.InterpolationTools;
 import us.ihmc.commons.MathTools;
 
-import java.util.Arrays;
-
 /**
  * This class uses the Jacobian at the internal joint Angle guess and the error in the Angle at that value to compute the modification to the
  * joint Angle guess to match the actuator Angle. It will iterate the joint angle estimate until some convergence threshold is reached.
  */
 public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInverseKinematics
 {
-   private static final boolean LIMIT_EXECUTION_TIME = false;
+   private boolean limitExecutionTime = false;
 
    private static final double maxRatioForSteppingInOneDirection = Double.POSITIVE_INFINITY;
 
@@ -26,33 +24,33 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
    // learning rate is adaptive, so that a smaller learning rate is applied for small steps, and a smaller learning rate is applied to big steps, so that the
    // angle doesn't overshoot quickly, and increases  the rate of change as it gets closer. Between these two thresholds,
    // the applied learning rate is linearly interpolated.
-   static final double learningRateForLargeSteps = 0.2; // The learning rate to apply for large steps.
-   static final double learningRateForSmallSteps = 0.8; // The learning rate to apply for small steps.
-   static final double smallStepSizeThreshold = 0.0; // The maximum candidate step size to apply the small learning rate
-   static final double largeStepSizeThreshold = 0.5; // The minimum candidate step size at which to start applying the larger learning rate
+   double learningRateForLargeSteps = 0.2; // The learning rate to apply for large steps.
+   double learningRateForSmallSteps = 0.8; // The learning rate to apply for small steps.
+   double smallStepSizeThreshold = 0.0; // The maximum candidate step size to apply the small learning rate
+   double largeStepSizeThreshold = 0.5; // The minimum candidate step size at which to start applying the larger learning rate
 
    // As the gradient descent is adaptive, it checks for overshoot. If the new candidate solution overshoots the optimal solution (which is determined by the
    // gradient changing signs), the learning rate is reduced, and the candidate solution is recomputed.
    private int maximumNumberOfOvershootCorrections = 5; // maximum number of iterations to perform at a single configuration
    // If the candidate correction overshoots, but the new gradient value is low enough (defined by being less than this value), the new solution is accepted
-   private static final double minimumGradientForOvershootCorrection = 1e-2;
+   private double minimumGradientForOvershootCorrection = 1e-2;
    // This is the rate at which the learning rate is reduced every time the candidate solution overshoots. learningRate *= reduction
-   private static final double learningRateScaleForOvershootCorrection = 0.5;
+   private double learningRateScaleForOvershootCorrection = 0.5;
 
    // These are the values that determine if the solver has converged to a solution. If the actuator angle convergence, that means the correct roll/pitch
    // combination was found for the desired angles. This is an angle difference check. If the actuator angles have not converged by the step size has converged,
    // that means the system has reached a local minima, and continuing to search will result in no changes.
-   private static final double actuatorAngleConvergenceEpsilon = 1e-8;
-   private static final double stepSizeConvergenceEpsilon = 1e-8;
+   private double actuatorAngleConvergenceEpsilon = 1e-7;
+   private double stepSizeConvergenceEpsilon = 1e-8;
 
-   private static final double jacobianSingularityThreshold = 1e-5;
-   private static final double explodingJacobianThreshold = 1e10;
+   private double jacobianSingularityThreshold = 1e-5;
+   private double explodingJacobianThreshold = 1e10;
 
    // These are the termination conditions that forcefully terminate the solver iterations. If it reaches a maximum number of iterations, whether this is
    // stepping to a new solution or correcting an overshoot, it should stop. If it reaches a maximum time, it should also stop.
    private int maxTotalIterations = 50;
    private int minTotalIterations = 0;
-   private static final long maxTimeNS = 100000;
+   private long maxTimeNS = 100000;
 
    // These are the things that define the kinematic structure for the problem solution. It defines the mechanism in question.
    private final JointPairForwardKinematics forwardKinematics;
@@ -89,9 +87,64 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
       rollIndex = jacobianCalculator.getRollIndex();
    }
 
-   public void setMaximumTotalIterations(int maximumTotalIterations)
+   public void setLimitExecutionTime(boolean limitExecutionTime)
    {
-      this.maxTotalIterations = maximumTotalIterations;
+      this.limitExecutionTime = limitExecutionTime;
+   }
+
+   public void setLearningRateForLargeSteps(double learningRateForLargeSteps)
+   {
+      this.learningRateForLargeSteps = learningRateForLargeSteps;
+   }
+
+   public void setLearningRateForSmallSteps(double learningRateForSmallSteps)
+   {
+      this.learningRateForSmallSteps = learningRateForSmallSteps;
+   }
+
+   public void setSmallStepSizeThreshold(double smallStepSizeThreshold)
+   {
+      this.smallStepSizeThreshold = smallStepSizeThreshold;
+   }
+
+   public void setLargeStepSizeThreshold(double largeStepSizeThreshold)
+   {
+      this.largeStepSizeThreshold = largeStepSizeThreshold;
+   }
+
+   public void setMaximumNumberOfOvershootCorrections(int maximumNumberOfOvershootCorrections)
+   {
+      this.maximumNumberOfOvershootCorrections = maximumNumberOfOvershootCorrections;
+   }
+
+   public void setMinimumGradientForOvershootCorrection(double minimumGradientForOvershootCorrection)
+   {
+      this.minimumGradientForOvershootCorrection = minimumGradientForOvershootCorrection;
+   }
+
+   public void setLearningRateScaleForOvershootCorrection(double learningRateScaleForOvershootCorrection)
+   {
+      this.learningRateScaleForOvershootCorrection = learningRateScaleForOvershootCorrection;
+   }
+
+   public void setActuatorAngleConvergenceEpsilon(double actuatorAngleConvergenceEpsilon)
+   {
+      this.actuatorAngleConvergenceEpsilon = actuatorAngleConvergenceEpsilon;
+   }
+
+   public void setStepSizeConvergenceEpsilon(double stepSizeConvergenceEpsilon)
+   {
+      this.stepSizeConvergenceEpsilon = stepSizeConvergenceEpsilon;
+   }
+
+   public void setJacobianSingularityThreshold(double jacobianSingularityThreshold)
+   {
+      this.jacobianSingularityThreshold = jacobianSingularityThreshold;
+   }
+
+   public void setExplodingJacobianThreshold(double explodingJacobianThreshold)
+   {
+      this.explodingJacobianThreshold = explodingJacobianThreshold;
    }
 
    public void setMinimumTotalIterations(int minTotalIterations)
@@ -99,9 +152,36 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
       this.minTotalIterations = minTotalIterations;
    }
 
-   public void setMaximumNumberOfOvershootCorrections(int maximumNumberOfOvershootCorrections)
+   public void setMaximumTotalIterations(int maximumTotalIterations)
    {
-      this.maximumNumberOfOvershootCorrections = maximumNumberOfOvershootCorrections;
+      this.maxTotalIterations = maximumTotalIterations;
+   }
+
+   public void setMaxTimeNS(long maxTimeNS)
+   {
+      this.maxTimeNS = maxTimeNS;
+   }
+
+   public void setIKParameters(IKParameters ikParameters)
+   {
+      setLimitExecutionTime(ikParameters.getLimitExecutionTime());
+      setLearningRateForLargeSteps(ikParameters.getLearningRateForLargeSteps());
+      setLearningRateForSmallSteps(ikParameters.getLearningRateForSmallSteps());
+      setSmallStepSizeThreshold(ikParameters.getSmallStepSizeThreshold());
+      setLargeStepSizeThreshold(ikParameters.getLargeStepSizeThreshold());
+
+      setMaximumNumberOfOvershootCorrections(ikParameters.getMaximumNumberOfOvershootCorrections());
+      setMinimumGradientForOvershootCorrection(ikParameters.getMinimumGradientForOvershootCorrection());
+      setLearningRateScaleForOvershootCorrection(ikParameters.getLearningRateScaleForOvershootCorrection());
+
+      setActuatorAngleConvergenceEpsilon(ikParameters.getActuatorAngleConvergenceEpsilon());
+      setStepSizeConvergenceEpsilon(ikParameters.getStepSizeConvergenceEpsilon());
+      setJacobianSingularityThreshold(ikParameters.getJacobianSingularityThreshold());
+      setExplodingJacobianThreshold(ikParameters.getExplodingJacobianThreshold());
+
+      setMaximumTotalIterations(ikParameters.getMaxTotalIterations());
+      setMinimumTotalIterations(ikParameters.getMinTotalIterations());
+      setMaxTimeNS(ikParameters.getMaxTimeNS());
    }
 
    public void triggerReinitialize()
@@ -169,7 +249,7 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
       long startTime = System.nanoTime();
       timeElapsed = 0;
 
-      while (iterations < maxTotalIterations && (!LIMIT_EXECUTION_TIME || timeElapsed < maxTimeNS))
+      while (iterations < maxTotalIterations && (!limitExecutionTime || timeElapsed < maxTimeNS))
       {
          boolean hasIteratedEnough = iterations >= minTotalIterations;
          if (hasIteratedEnough && currentJointAngleState.haveActuatorPositionsConverged(desiredRightActuatorPosition,
@@ -181,20 +261,15 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
             reinitializeOnNextCompute = false;
             timeElapsed = System.nanoTime() - startTime;
             convergenceCondition = IKConvergenceCondition.OBJECTIVE_CONVERGED;
-            residualSquaredError =
-                  MathTools.square(currentJointAngleState.getRightActuatorPosition() - desiredRightActuatorPosition) + MathTools.square(
-                        currentJointAngleState.getLeftActuatorPosition() - desiredLeftActuatorPosition);
             break;
          }
          if (hasIteratedEnough && currentJointAngleState.haveStepSizesConverged(stepSizeConvergenceEpsilon))
          {
             // If this is true, that means the step size is below some threshold, but the objective was not reached. That means that the solver is stuck in a
             // local minima. Because it's in a local minima, next time around, we should reinitialize the joint positions
+            reinitializeOnNextCompute = false;
             timeElapsed = System.nanoTime() - startTime;
             convergenceCondition = IKConvergenceCondition.GRADIENT_CONVERGED;
-            residualSquaredError =
-                  MathTools.square(currentJointAngleState.getRightActuatorPosition() - desiredRightActuatorPosition) + MathTools.square(
-                        currentJointAngleState.getLeftActuatorPosition() - desiredLeftActuatorPosition);
             break;
          }
 
@@ -204,6 +279,11 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
          // Record the elapsed time, such that if we have a maximum time we can ensure it doesn't get exceeded.
          timeElapsed = System.nanoTime() - startTime;
       }
+
+      residualSquaredError =
+            MathTools.square(currentJointAngleState.getRightActuatorPosition() - desiredRightActuatorPosition) + MathTools.square(
+                  currentJointAngleState.getLeftActuatorPosition() - desiredLeftActuatorPosition);
+
       rollAngle = currentJointAngleState.getRollAngle();
       pitchAngle = currentJointAngleState.getPitchAngle();
 
@@ -268,7 +348,7 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
     * @param jointAngleStepGuessToPack resulting configuration after applying the step. Modified.
     * @param learningRateDiscount      discount factor to apply to the learning rate.
     */
-   private static void takeJointStep(GradientDescentIterationData startingJointAngleStep,
+   private void takeJointStep(GradientDescentIterationData startingJointAngleStep,
                                      GradientDescentIterationData jointAngleStepGuessToPack,
                                      double learningRateDiscount)
    {
@@ -321,7 +401,16 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
     * is returned as {#minCorrectionScalar}. When the error is big (above {#errorForBigCorrection}), the scalar is returned as {#maxCorrectionScalar}. In
     * between, the correction scalar is linearly increased.
     */
-   static double getLearningRate(double errorMagnitude)
+   public double getLearningRate(double errorMagnitude)
+   {
+      return getLearningRate(errorMagnitude, smallStepSizeThreshold, largeStepSizeThreshold, learningRateForSmallSteps, learningRateForLargeSteps);
+   }
+
+   public static double getLearningRate(double errorMagnitude,
+                                        double smallStepSizeThreshold,
+                                        double largeStepSizeThreshold,
+                                        double learningRateForSmallSteps,
+                                        double learningRateForLargeSteps)
    {
       double absError = Math.abs(errorMagnitude);
       double alpha = (absError - smallStepSizeThreshold) / (largeStepSizeThreshold - smallStepSizeThreshold);
@@ -384,7 +473,7 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
     * @param currentAngleAfterStepping new configuration after applying the candidate step
     * @return whether the candidate step causes the new solution to overshoot.
     */
-   private static boolean didJointCorrectionOvershoot(GradientDescentIterationData previousAngleStep, GradientDescentIterationData currentAngleAfterStepping)
+   private boolean didJointCorrectionOvershoot(GradientDescentIterationData previousAngleStep, GradientDescentIterationData currentAngleAfterStepping)
    {
       // If the previous state didn't have a step size, we're just getting started. This means we don't care about overshooting.
       if (Double.isNaN(previousAngleStep.getCandidateRollAngleStepSize()) || Double.isNaN(previousAngleStep.getCandidatePitchAngleStepSize()))
@@ -393,7 +482,7 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
       double rollSign = Math.signum(currentAngleAfterStepping.getCandidateRollAngleStepSize());
       double absDeltaRoll = rollSign * currentAngleAfterStepping.getCandidateRollAngleStepSize();
 
-      double maximumAllowableGradientIfSignChange = Math.min(minimumGradientForOvershootCorrection, stepSizeConvergenceEpsilon);
+      double maximumAllowableGradientIfSignChange = Math.max(minimumGradientForOvershootCorrection, stepSizeConvergenceEpsilon);
 
       // If the roll sign changed, and the roll step size is above the allowable gradient, we overshot the optimal solution.
       if (rollSign != Math.signum(previousAngleStep.getCandidateRollAngleStepSize()) && absDeltaRoll > maximumAllowableGradientIfSignChange)
@@ -447,6 +536,18 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
    public IKConvergenceCondition getConvergenceCondition()
    {
       return convergenceCondition;
+   }
+
+   @Override
+   public double getPitchStepSize()
+   {
+      return currentJointAngleState.getCandidatePitchAngleStepSize();
+   }
+
+   @Override
+   public double getRollStepSize()
+   {
+      return currentJointAngleState.getCandidatePitchAngleStepSize();
    }
 
    @Override

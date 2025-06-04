@@ -25,5 +25,9 @@ public interface JointPairInverseKinematics
 
    boolean successfullyWarmStarted();
 
+   double getPitchStepSize();
+
+   double getRollStepSize();
+
    void setMinimumTotalIterations(int minIterations);
 }
