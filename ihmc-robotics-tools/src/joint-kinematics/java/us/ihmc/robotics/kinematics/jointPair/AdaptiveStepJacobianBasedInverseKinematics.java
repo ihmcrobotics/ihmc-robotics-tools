@@ -1,5 +1,6 @@
 package us.ihmc.robotics.kinematics.jointPair;
 
+import us.ihmc.commons.AngleTools;
 import us.ihmc.robotics.kinematics.jointPair.interfaces.JointPairForwardKinematics;
 import us.ihmc.robotics.kinematics.jointPair.interfaces.JointPairInverseKinematics;
 import us.ihmc.robotics.kinematics.jointPair.interfaces.JointPairJacobian;
@@ -8,6 +9,7 @@ import org.ejml.dense.row.misc.UnrolledDeterminantFromMinor_DDRM;
 import org.ejml.dense.row.mult.MatrixMatrixMult_DDRM;
 import us.ihmc.commons.InterpolationTools;
 import us.ihmc.commons.MathTools;
+import us.ihmc.robotics.kinematics.rotaryDifferential.RotaryActuatorDifferentialKinematicsSpecifications;
 
 /**
  * This class uses the Jacobian at the internal joint Angle guess and the error in the Angle at that value to compute the modification to the
@@ -67,6 +69,11 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
    private double pitchAngle = Double.NaN;
    private boolean reinitializeOnNextCompute = true;
 
+   private final double maxRoll;
+   private final double minRoll;
+   private final double maxPitch;
+   private final double minPitch;
+
    // Temporary state variables used to return the solver solutions.
    private final GradientDescentIterationData currentJointAngleState = new GradientDescentIterationData();
    private final GradientDescentIterationData candidateJointAngleState = new GradientDescentIterationData();
@@ -85,6 +92,12 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
       this.forwardKinematics = jacobianCalculator.getForwardKinematics();
       pitchIndex = jacobianCalculator.getPitchIndex();
       rollIndex = jacobianCalculator.getRollIndex();
+
+      // We have to bound these to be within [-pi, pi)
+      maxRoll = Math.min(forwardKinematics.getRollJointUpperLimit(), Math.PI - 1e-5);
+      minRoll = Math.max(forwardKinematics.getRollJointLowerLimit(), -Math.PI);
+      maxPitch = Math.min(forwardKinematics.getPitchJointUpperLimit(), Math.PI - 1e-5);
+      minPitch = Math.max(forwardKinematics.getPitchJointLowerLimit(), -Math.PI);
    }
 
    public void setLimitExecutionTime(boolean limitExecutionTime)
@@ -447,8 +460,20 @@ public class AdaptiveStepJacobianBasedInverseKinematics implements JointPairInve
       // compute the joint correction
       MatrixMatrixMult_DDRM.mult_small(jacobianCalculator.getJacobianMatrixInverse(), actuatorError, jointCorrection);
 
+      double rollAngle = AngleTools.trimAngleMinusPiToPi(angleStepToPack.getRollAngle());
+      double pitchAngle = AngleTools.trimAngleMinusPiToPi(angleStepToPack.getPitchAngle());
+
+      double maxRollStepSize = maxRoll - rollAngle;
+      double minRollStepSize = minRoll - rollAngle;
+
+      double maxPitchStepSize = maxPitch - pitchAngle;
+      double minPitchStepSize = minPitch - pitchAngle;
+
+      double rollStepSize = MathTools.clamp(jointCorrection.get(rollIndex, 0), minRollStepSize, maxRollStepSize);
+      double pitchStepSize = MathTools.clamp(jointCorrection.get(pitchIndex, 0), minPitchStepSize, maxPitchStepSize);
+
       // pull the results into the data structure from the vector
-      angleStepToPack.setCandidateJointAngleStepSizes(jointCorrection.get(rollIndex, 0), jointCorrection.get(pitchIndex, 0));
+      angleStepToPack.setCandidateJointAngleStepSizes(rollStepSize, pitchStepSize);
       angleStepToPack.setIfCurrentPositionsAreSingular(false);
       return true;
    }

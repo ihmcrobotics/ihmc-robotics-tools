@@ -42,6 +42,10 @@ public class EasyGeometryRotaryDifferentialMechanismTest extends RotaryActuatorD
                                                                                                                       rightRodEndLength,
                                                                                                                       new Vector3D(),
                                                                                                                       true,
+                                                                                                                      -Math.PI,
+                                                                                                                      Math.PI,
+                                                                                                                      -Math.PI,
+                                                                                                                      Math.PI,
                                                                                                                       false,
                                                                                                                       false);
       RotaryActuatorDifferentialInverseKinematics inverseKinematics = new RotaryActuatorDifferentialInverseKinematics(new RotaryActuatorDifferentialJacobianCalculator(

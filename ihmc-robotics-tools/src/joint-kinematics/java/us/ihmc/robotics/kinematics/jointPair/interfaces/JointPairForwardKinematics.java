@@ -1,5 +1,8 @@
 package us.ihmc.robotics.kinematics.jointPair.interfaces;
 
+import us.ihmc.robotics.kinematics.jointPair.DifferentialKinematicsSpecification;
+import us.ihmc.robotics.kinematics.rotaryDifferential.RotaryActuatorDifferentialKinematicsSpecifications;
+
 /**
  * The forward kinematics are defined as the kinematics that convert joint configurations into actuators positions. The "Forward" and "Inverse" are defined
  * relative to the controller, which "forward" converts desired joint objectives into actuator objectives and "inverse" computes measured joint data from actuator
@@ -33,4 +36,24 @@ public interface JointPairForwardKinematics
     * @return pitch joint angle in radians.
     */
    double getPitchAngle();
+
+   /**
+    * @return lower joint limit in radians for the roll joint, assuming the pitch joint is ignored (box constraints).
+    */
+   double getRollJointLowerLimit();
+
+   /**
+    * @return upper joint limit in radians for the roll joint, assuming the pitch joint is ignored (box constraints).
+    */
+   double getRollJointUpperLimit();
+
+   /**
+    * @return lower joint limit in radians for the pitch joint, assuming the roll joint is ignored (box constraints).
+    */
+   double getPitchJointLowerLimit();
+
+   /**
+    * @return upper joint limit in radians for the pitch joint, assuming the roll joint is ignored (box constraints).
+    */
+   double getPitchJointUpperLimit();
 }

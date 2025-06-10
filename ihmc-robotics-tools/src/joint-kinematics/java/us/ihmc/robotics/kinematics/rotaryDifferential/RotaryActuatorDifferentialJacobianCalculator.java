@@ -178,9 +178,6 @@ public class RotaryActuatorDifferentialJacobianCalculator implements JointPairJa
 
       CommonOps_DDRM.mult(-1.0, JrightInverse, Jleft, jacobianTemp);
 
-      if (CommonOps_DDRM.elementMax(jacobianTemp) > 50.0 || CommonOps_DDRM.elementMin(jacobianTemp) < -50.0)
-         LogTools.info("Crap");
-
       jacobian.set(rightIndex, rollIndex, jacobianTemp.get(1, forwardKinematics.getRollIsFirstJoint() ? 0 : 1));
       jacobian.set(leftIndex, rollIndex, jacobianTemp.get(0, forwardKinematics.getRollIsFirstJoint() ? 0 : 1));
       jacobian.set(rightIndex, pitchIndex, jacobianTemp.get(1, forwardKinematics.getRollIsFirstJoint() ? 1 : 0));

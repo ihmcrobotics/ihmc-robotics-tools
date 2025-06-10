@@ -35,6 +35,10 @@ public class RotaryActuatorDifferentialTestHelper
                                                                                                                       rightRodEndLength,
                                                                                                                       vectorFromFirstToSecondJoint,
                                                                                                                       rollIsFirstJoint,
+                                                                                                                      -Math.PI,
+                                                                                                                      Math.PI,
+                                                                                                                      -Math.PI,
+                                                                                                                      Math.PI,
                                                                                                                       false,
                                                                                                                       false);
       return forwardKinematics;
