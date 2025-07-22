@@ -1,6 +1,6 @@
 plugins {
    id("us.ihmc.ihmc-build")
-   id("us.ihmc.log-tools-plugin") version "0.6.4"
+   id("us.ihmc.log-tools-plugin") version "0.6.5"
 }
 
 ihmc {
@@ -11,11 +11,11 @@ ihmc {
 }
 
 mainDependencies {
-   api("us.ihmc:ihmc-commons:0.35.0")
-   api("us.ihmc:euclid-frame:0.22.2")
-   api("us.ihmc:ihmc-yovariables:0.13.4")
-   api("us.ihmc:ihmc-yovariables-filters:0.13.4")
-   api("us.ihmc:ihmc-graphics-description:0.26.0")
+   api("us.ihmc:ihmc-commons:0.35.1")
+   api("us.ihmc:euclid-frame:0.22.3")
+   api("us.ihmc:ihmc-yovariables:0.13.6")
+   api("us.ihmc:ihmc-yovariables-filters:0.13.6")
+   api("us.ihmc:ihmc-graphics-description:0.26.2")
 }
 
 jointKinematicsDependencies {
@@ -30,6 +30,6 @@ visualizersDependencies{
 testDependencies {
    api(ihmc.sourceSetProject("joint-kinematics"))
    api("org.apache.commons:commons-math3:3.6.1")
-   api("us.ihmc:ihmc-commons-testing:0.35.0")
+   api("us.ihmc:ihmc-commons-testing:0.35.1")
    api("com.google.guava:guava:18.0")
 }

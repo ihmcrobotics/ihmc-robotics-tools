@@ -92,7 +92,9 @@ public class JointPairMechanism
       inverseKinematics.computeJointAngles(actuatorData.getRightPosition(), actuatorData.getLeftPosition());
       double rollAngle = inverseKinematics.getRollJointAngle();
       double pitchAngle = inverseKinematics.getPitchJointAngle();
+
       forwardKinematics.computeActuatorPositions(rollAngle, pitchAngle);
+
       jacobianCalculator.computeJacobian();
       actuatorVelocityVector.set(rightIndex, 0, actuatorData.getRightVelocity());
       actuatorVelocityVector.set(leftIndex, 0, actuatorData.getLeftVelocity());
@@ -100,6 +102,7 @@ public class JointPairMechanism
       actuatorForceVector.set(leftIndex, 0, actuatorData.getLeftForce());
       CommonOps_DDRM.mult(jacobianCalculator.getJacobianMatrixInverse(), actuatorVelocityVector, jointVelocityVector);
       CommonOps_DDRM.mult(jacobianCalculator.getJacobianTransposeMatrix(), actuatorForceVector, jointTorqueVector);
+
       jointDataToPack.setPitchPosition(pitchAngle);
       jointDataToPack.setPitchVelocity(jointVelocityVector.get(pitchIndex, 0));
       jointDataToPack.setPitchTorque(jointTorqueVector.get(pitchIndex, 0));
@@ -142,12 +145,15 @@ public class JointPairMechanism
       jointVelocityVector.set(rollIndex, 0, rollVelocity);
       jointTorqueVector.set(pitchIndex, 0, pitchTorque);
       jointTorqueVector.set(rollIndex, 0, rollTorque);
+
       CommonOps_DDRM.mult(jacobianCalculator.getJacobianMatrix(), jointVelocityVector, actuatorVelocityVector);
       CommonOps_DDRM.mult(jacobianCalculator.getJacobianTransposeMatrixInverse(), jointTorqueVector, actuatorForceVector);
+
       actuatorDataToPack.setRightVelocity(actuatorVelocityVector.get(rightIndex, 0));
       actuatorDataToPack.setRightForce(actuatorForceVector.get(rightIndex, 0));
       actuatorDataToPack.setLeftVelocity(actuatorVelocityVector.get(leftIndex, 0));
       actuatorDataToPack.setLeftForce(actuatorForceVector.get(leftIndex, 0));
+
       if (jointData.hasPitchStiffness() && jointData.hasRollStiffness())
       {
          jointStiffnessMatrix.set(pitchIndex, pitchIndex, jointData.getPitchStiffness());
@@ -211,6 +217,16 @@ public class JointPairMechanism
    public double getIKResidualSquaredError()
    {
       return inverseKinematics.getResidualSquaredError();
+   }
+
+   public double getIKPitchStepSize()
+   {
+      return inverseKinematics.getPitchStepSize();
+   }
+
+   public double getIKRollStepSize()
+   {
+      return inverseKinematics.getRollStepSize();
    }
 
    public boolean getIKSuccessfullyWarmStarted()

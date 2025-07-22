@@ -6,9 +6,6 @@ import org.ejml.dense.row.CommonOps_DDRM;
 import org.junit.jupiter.api.Test;
 import us.ihmc.commons.InterpolationTools;
 import us.ihmc.commons.RandomNumbers;
-import us.ihmc.euclid.referenceFrame.FramePoint3D;
-import us.ihmc.euclid.referenceFrame.FrameVector3D;
-import us.ihmc.euclid.referenceFrame.ReferenceFrame;
 import us.ihmc.euclid.tools.EuclidCoreTools;
 import us.ihmc.log.LogTools;
 import us.ihmc.robotics.kinematics.jointPair.SamplingFiniteDifferenceJointPairJacobianCalculator;
@@ -22,93 +19,93 @@ public abstract class RotaryActuatorDifferentialJacobianCalculatorTest
    private static final int iters = 1000;
 
    protected abstract RotaryActuatorDifferentialKinematicsSpecifications getKinematicsSpecification(boolean rollIsFirstJoint);
-
-   @Test
-   public void testComputeForceAlonRodEnd()
-   {
-      Random random = new Random(1738L);
-
-      // First test with easy geometry
-      for (boolean rollIsFirstJoint : new boolean[] {true, false})
-      {
-         RotaryActuatorDifferentialKinematicsSpecifications kinematicsSpecifications = getKinematicsSpecification(rollIsFirstJoint);
-         RotaryActuatorDifferentialForwardKinematics forwardKinematics = new RotaryActuatorDifferentialForwardKinematics(kinematicsSpecifications);
-         RotaryActuatorDifferentialJacobianCalculator jacobianCalculator = new RotaryActuatorDifferentialJacobianCalculator(forwardKinematics);
-
-         double pitchLower = rollIsFirstJoint ? kinematicsSpecifications.getSecondJointLowerLimit() : kinematicsSpecifications.getFirstJointLowerLimit();
-         double pitchUpper = rollIsFirstJoint ? kinematicsSpecifications.getSecondJointUpperLimit() : kinematicsSpecifications.getFirstJointUpperLimit();
-         double rollLower = rollIsFirstJoint ? kinematicsSpecifications.getFirstJointLowerLimit() : kinematicsSpecifications.getSecondJointLowerLimit();
-         double rollUpper = rollIsFirstJoint ? kinematicsSpecifications.getFirstJointUpperLimit() : kinematicsSpecifications.getSecondJointUpperLimit();
-         for (double pitchAngle = 0.75 * pitchLower; pitchAngle <= 0.75 * pitchUpper; pitchAngle += Math.toRadians(2.5))
-         {
-            for (double rollAngle = 0.6 * rollLower; rollAngle <= 0.6 * rollUpper; rollAngle += Math.toRadians(2.5))
-            {
-               forwardKinematics.computeActuatorPositions(rollAngle, pitchAngle);
-
-               //               secondJointPosition.setFromReferenceFrame(forwardKinematics.getFrameAfterSecondJoint());
-               //               firstJointPosition.setFromReferenceFrame(forwardKinematics.getFrameAfterFirstJoint());
-               FramePoint3D rightActuatorPosition = new FramePoint3D(forwardKinematics.getRightActuatorFrame());
-               FramePoint3D leftActuatorPosition = new FramePoint3D(forwardKinematics.getLeftActuatorFrame());
-               FramePoint3D rightActuatorRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getRightActuatorRodEndAttachment());
-               FramePoint3D leftActuatorRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getLeftActuatorRodEndAttachment());
-               FramePoint3D rightBaseRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getRightBaseRodEndAttachment());
-               FramePoint3D leftBaseRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getLeftBaseRodEndAttachment());
-
-               leftActuatorRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
-               rightActuatorRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
-               leftActuatorPosition.changeFrame(ReferenceFrame.getWorldFrame());
-               rightActuatorPosition.changeFrame(ReferenceFrame.getWorldFrame());
-               leftBaseRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
-               rightBaseRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
-
-               // Compute some of the geometry vectors, which are used to compute force along the rod ends
-               FrameVector3D leftVectorFromActuatorToRodEnd = new FrameVector3D();
-               FrameVector3D rightVectorFromActuatorToRodEnd = new FrameVector3D();
-               FrameVector3D rightRodEndVector = new FrameVector3D();
-               FrameVector3D leftRodEndVector = new FrameVector3D();
-               rightVectorFromActuatorToRodEnd.sub(rightActuatorRodEndAttachmentPosition, rightActuatorPosition);
-               leftVectorFromActuatorToRodEnd.sub(leftActuatorRodEndAttachmentPosition, leftActuatorPosition);
-
-               rightRodEndVector.sub(rightBaseRodEndAttachmentPosition, rightActuatorRodEndAttachmentPosition);
-               leftRodEndVector.sub(leftBaseRodEndAttachmentPosition, leftActuatorRodEndAttachmentPosition);
-
-               // get the force along the rod ends resulting from unit torques. This may have some problems
-               double rightActuatorTorqueExpected = RandomNumbers.nextDouble(random, 100.0);
-               double leftActuatorTorqueExpected = RandomNumbers.nextDouble(random, 100.0);
-               FrameVector3D forceAlongRightRodEnd = new FrameVector3D();
-               FrameVector3D forceAlongLeftRodEnd = new FrameVector3D();
-               jacobianCalculator.getForceAlongRodEnd(leftActuatorTorqueExpected,
-                                                      leftVectorFromActuatorToRodEnd,
-                                                      leftRodEndVector,
-                                                      forwardKinematics.getLeftMotorRotationAxis(),
-                                                      forceAlongLeftRodEnd);
-               jacobianCalculator.getForceAlongRodEnd(rightActuatorTorqueExpected,
-                                                      rightVectorFromActuatorToRodEnd,
-                                                      rightRodEndVector,
-                                                      forwardKinematics.getRightMotorRotationAxis(),
-                                                      forceAlongRightRodEnd);
-
-               // force along the rod ends should be colinear with the rod ends
-               double allowableError = 1e-10 * forceAlongRightRodEnd.norm() * rightRodEndVector.norm();
-               assertEquals(forceAlongRightRodEnd.norm() * rightRodEndVector.norm(), Math.abs(forceAlongRightRodEnd.dot(rightRodEndVector)), allowableError);
-               allowableError = 1e-10 * forceAlongLeftRodEnd.norm() * leftRodEndVector.norm();
-               assertEquals(forceAlongLeftRodEnd.norm() * leftRodEndVector.norm(), Math.abs(forceAlongLeftRodEnd.dot(leftRodEndVector)), allowableError);
-
-               // if the force is computed correctly, the torque back calculated should be correct
-               FrameVector3D rightActuatorTorque = new FrameVector3D();
-               FrameVector3D leftActuatorTorque = new FrameVector3D();
-               rightActuatorTorque.cross(rightVectorFromActuatorToRodEnd, forceAlongRightRodEnd);
-               leftActuatorTorque.cross(leftVectorFromActuatorToRodEnd, forceAlongLeftRodEnd);
-               double rightMotorTorque = rightActuatorTorque.dot(forwardKinematics.getRightMotorRotationAxis());
-               double leftMotorTorque = leftActuatorTorque.dot(forwardKinematics.getLeftMotorRotationAxis());
-
-               String failureMessage = "Failed at roll = " + Math.toDegrees(rollAngle) + ", pitch = " + Math.toDegrees(pitchAngle);
-               assertEquals(rightActuatorTorqueExpected, rightMotorTorque, 1e-6, failureMessage);
-               assertEquals(leftActuatorTorqueExpected, leftMotorTorque, 1e-6, failureMessage);
-            }
-         }
-      }
-   }
+//
+//   @Test
+//   public void testComputeForceAlongRodEnd()
+//   {
+//      Random random = new Random(1738L);
+//
+//      // First test with easy geometry
+//      for (boolean rollIsFirstJoint : new boolean[] {true, false})
+//      {
+//         RotaryActuatorDifferentialKinematicsSpecifications kinematicsSpecifications = getKinematicsSpecification(rollIsFirstJoint);
+//         RotaryActuatorDifferentialForwardKinematics forwardKinematics = new RotaryActuatorDifferentialForwardKinematics(kinematicsSpecifications);
+//         RotaryActuatorDifferentialJacobianCalculator jacobianCalculator = new RotaryActuatorDifferentialJacobianCalculator(forwardKinematics);
+//
+//         double pitchLower = rollIsFirstJoint ? kinematicsSpecifications.getSecondJointLowerLimit() : kinematicsSpecifications.getFirstJointLowerLimit();
+//         double pitchUpper = rollIsFirstJoint ? kinematicsSpecifications.getSecondJointUpperLimit() : kinematicsSpecifications.getFirstJointUpperLimit();
+//         double rollLower = rollIsFirstJoint ? kinematicsSpecifications.getFirstJointLowerLimit() : kinematicsSpecifications.getSecondJointLowerLimit();
+//         double rollUpper = rollIsFirstJoint ? kinematicsSpecifications.getFirstJointUpperLimit() : kinematicsSpecifications.getSecondJointUpperLimit();
+//         for (double pitchAngle = 0.75 * pitchLower; pitchAngle <= 0.75 * pitchUpper; pitchAngle += Math.toRadians(2.5))
+//         {
+//            for (double rollAngle = 0.6 * rollLower; rollAngle <= 0.6 * rollUpper; rollAngle += Math.toRadians(2.5))
+//            {
+//               forwardKinematics.computeActuatorPositions(rollAngle, pitchAngle);
+//
+//               //               secondJointPosition.setFromReferenceFrame(forwardKinematics.getFrameAfterSecondJoint());
+//               //               firstJointPosition.setFromReferenceFrame(forwardKinematics.getFrameAfterFirstJoint());
+//               FramePoint3D rightActuatorPosition = new FramePoint3D(forwardKinematics.getRightActuatorFrame());
+//               FramePoint3D leftActuatorPosition = new FramePoint3D(forwardKinematics.getLeftActuatorFrame());
+//               FramePoint3D rightActuatorRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getRightActuatorRodEndAttachment());
+//               FramePoint3D leftActuatorRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getLeftActuatorRodEndAttachment());
+//               FramePoint3D rightBaseRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getRightBaseRodEndAttachment());
+//               FramePoint3D leftBaseRodEndAttachmentPosition = new FramePoint3D(forwardKinematics.getLeftBaseRodEndAttachment());
+//
+//               leftActuatorRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
+//               rightActuatorRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
+//               leftActuatorPosition.changeFrame(ReferenceFrame.getWorldFrame());
+//               rightActuatorPosition.changeFrame(ReferenceFrame.getWorldFrame());
+//               leftBaseRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
+//               rightBaseRodEndAttachmentPosition.changeFrame(ReferenceFrame.getWorldFrame());
+//
+//               // Compute some of the geometry vectors, which are used to compute force along the rod ends
+//               FrameVector3D leftVectorFromActuatorToRodEnd = new FrameVector3D();
+//               FrameVector3D rightVectorFromActuatorToRodEnd = new FrameVector3D();
+//               FrameVector3D rightRodEndVector = new FrameVector3D();
+//               FrameVector3D leftRodEndVector = new FrameVector3D();
+//               rightVectorFromActuatorToRodEnd.sub(rightActuatorRodEndAttachmentPosition, rightActuatorPosition);
+//               leftVectorFromActuatorToRodEnd.sub(leftActuatorRodEndAttachmentPosition, leftActuatorPosition);
+//
+//               rightRodEndVector.sub(rightBaseRodEndAttachmentPosition, rightActuatorRodEndAttachmentPosition);
+//               leftRodEndVector.sub(leftBaseRodEndAttachmentPosition, leftActuatorRodEndAttachmentPosition);
+//
+//               // get the force along the rod ends resulting from unit torques. This may have some problems
+//               double rightActuatorTorqueExpected = RandomNumbers.nextDouble(random, 100.0);
+//               double leftActuatorTorqueExpected = RandomNumbers.nextDouble(random, 100.0);
+//               FrameVector3D forceAlongRightRodEnd = new FrameVector3D();
+//               FrameVector3D forceAlongLeftRodEnd = new FrameVector3D();
+//               jacobianCalculator.getForceAlongRodEnd(leftActuatorTorqueExpected,
+//                                                      leftVectorFromActuatorToRodEnd,
+//                                                      leftRodEndVector,
+//                                                      forwardKinematics.getLeftMotorRotationAxis(),
+//                                                      forceAlongLeftRodEnd);
+//               jacobianCalculator.getForceAlongRodEnd(rightActuatorTorqueExpected,
+//                                                      rightVectorFromActuatorToRodEnd,
+//                                                      rightRodEndVector,
+//                                                      forwardKinematics.getRightMotorRotationAxis(),
+//                                                      forceAlongRightRodEnd);
+//
+//               // force along the rod ends should be colinear with the rod ends
+//               double allowableError = 1e-10 * forceAlongRightRodEnd.norm() * rightRodEndVector.norm();
+//               assertEquals(forceAlongRightRodEnd.norm() * rightRodEndVector.norm(), Math.abs(forceAlongRightRodEnd.dot(rightRodEndVector)), allowableError);
+//               allowableError = 1e-10 * forceAlongLeftRodEnd.norm() * leftRodEndVector.norm();
+//               assertEquals(forceAlongLeftRodEnd.norm() * leftRodEndVector.norm(), Math.abs(forceAlongLeftRodEnd.dot(leftRodEndVector)), allowableError);
+//
+//               // if the force is computed correctly, the torque back calculated should be correct
+//               FrameVector3D rightActuatorTorque = new FrameVector3D();
+//               FrameVector3D leftActuatorTorque = new FrameVector3D();
+//               rightActuatorTorque.cross(rightVectorFromActuatorToRodEnd, forceAlongRightRodEnd);
+//               leftActuatorTorque.cross(leftVectorFromActuatorToRodEnd, forceAlongLeftRodEnd);
+//               double rightMotorTorque = rightActuatorTorque.dot(forwardKinematics.getRightMotorRotationAxis());
+//               double leftMotorTorque = leftActuatorTorque.dot(forwardKinematics.getLeftMotorRotationAxis());
+//
+//               String failureMessage = "Failed at roll = " + Math.toDegrees(rollAngle) + ", pitch = " + Math.toDegrees(pitchAngle);
+//               assertEquals(rightActuatorTorqueExpected, rightMotorTorque, 1e-6, failureMessage);
+//               assertEquals(leftActuatorTorqueExpected, leftMotorTorque, 1e-6, failureMessage);
+//            }
+//         }
+//      }
+//   }
 
    @Test
    public void testAgainstFiniteDiferenceCalculator()

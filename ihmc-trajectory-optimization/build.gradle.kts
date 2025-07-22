@@ -1,6 +1,6 @@
 plugins {
    id("us.ihmc.ihmc-build")
-   id("us.ihmc.log-tools-plugin") version "0.6.4"
+   id("us.ihmc.log-tools-plugin") version "0.6.5"
 }
 
 ihmc {
@@ -12,8 +12,8 @@ ihmc {
 
 mainDependencies {
    api("net.sf.trove4j:trove4j:3.0.3")
-   api("us.ihmc:ihmc-commons:0.34.0")
-   api("us.ihmc:ihmc-matrix-library:0.19.1")
+   api("us.ihmc:ihmc-commons:0.35.1")
+   api("us.ihmc:ihmc-matrix-library:0.19.3")
 }
 
 testDependencies {
@@ -22,8 +22,9 @@ testDependencies {
 
 examplesDependencies {
    api(ihmc.sourceSetProject("main"))
-   api("us.ihmc:euclid-frame:0.22.2")
-   api("us.ihmc:euclid-geometry:0.22.2")
+
+   api("us.ihmc:euclid-frame:0.22.4")
+   api("us.ihmc:euclid-geometry:0.22.4")
    api("us.ihmc:ihmc-yovariables:0.13.4")
    api("us.ihmc:simulation-construction-set:0.25.3") // SCS1
 }

@@ -1,6 +1,6 @@
 plugins {
    id("us.ihmc.ihmc-build")
-   id("us.ihmc.log-tools-plugin") version "0.6.4"
+   id("us.ihmc.log-tools-plugin") version "0.6.5"
 }
 
 ihmc {
@@ -11,11 +11,11 @@ ihmc {
 }
 
 mainDependencies {
-   api("us.ihmc:ihmc-matrix-library:0.19.1")
+   api("us.ihmc:ihmc-matrix-library:0.19.3")
    api("us.ihmc:ihmc-robotics-tools:source")
    api("org.ejml:ejml-simple:0.39")
    api("gov.nist.math:jama:1.0.3")
-   api("us.ihmc:ihmc-native-library-loader:2.0.3")
+   api("us.ihmc:ihmc-native-library-loader:2.0.4")
 }
 
 linearAlgebraDependencies {
