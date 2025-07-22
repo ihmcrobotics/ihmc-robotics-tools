@@ -1,6 +1,7 @@
 package us.ihmc.robotics.kinematics.rotaryDifferential;
 
 import us.ihmc.robotics.kinematics.TrigonometricApproximation;
+import us.ihmc.robotics.kinematics.jointPair.DifferentialKinematicsSpecification;
 import us.ihmc.robotics.kinematics.jointPair.interfaces.JointPairForwardKinematics;
 import us.ihmc.euclid.matrix.RotationMatrix;
 import us.ihmc.euclid.referenceFrame.FramePoint3D;
@@ -22,6 +23,11 @@ public class RotaryActuatorDifferentialForwardKinematics implements JointPairFor
 
    private static final Vector3DReadOnly pitchAxis = new Vector3D(0.0, 1.0, 0.0); // e1 in the above equations
    private static final Vector3DReadOnly rollAxis = new Vector3D(1.0, 0.0, 0.0);  // e2 in the above equations
+
+   private final double rollUpperLimit;
+   private final double rollLowerLimit;
+   private final double pitchUpperLimit;
+   private final double pitchLowerLimit;
 
    private final FrameVector3D pitchJointAxis = new FrameVector3D();
    private final FrameVector3D rollJointAxis = new FrameVector3D();
@@ -64,6 +70,14 @@ public class RotaryActuatorDifferentialForwardKinematics implements JointPairFor
            kinematicsSpecifications.getRightTieRodLength(),
            kinematicsSpecifications.getVectorToSecondJointFromFirstJoint(),
            kinematicsSpecifications.isTheFirstJointRoll(),
+           kinematicsSpecifications.isTheFirstJointRoll() ? kinematicsSpecifications.getFirstJointLowerLimit() :
+                 kinematicsSpecifications.getSecondJointLowerLimit(),
+           kinematicsSpecifications.isTheFirstJointRoll() ? kinematicsSpecifications.getFirstJointUpperLimit() :
+                 kinematicsSpecifications.getSecondJointUpperLimit(),
+           kinematicsSpecifications.isTheFirstJointRoll() ? kinematicsSpecifications.getSecondJointLowerLimit() :
+                 kinematicsSpecifications.getFirstJointLowerLimit(),
+           kinematicsSpecifications.isTheFirstJointRoll() ? kinematicsSpecifications.getSecondJointUpperLimit() :
+                 kinematicsSpecifications.getFirstJointUpperLimit(),
            useTrigonometricForwardApproximations,
            useTrigonometricInverseApproximations);
    }
@@ -78,6 +92,10 @@ public class RotaryActuatorDifferentialForwardKinematics implements JointPairFor
                                                       double rightTieRodLength,
                                                       Vector3DReadOnly vectorToSecondJointFromFirstJoint,
                                                       boolean rollIsFirstJoint,
+                                                      double rollLowerLimit,
+                                                      double rollUpperLimit,
+                                                      double pitchLowerLimit,
+                                                      double pitchUpperLimit,
                                                       boolean useTrigonometricForwardApproximations,
                                                       boolean useTrigonometricInverseApproximations)
    {
@@ -86,6 +104,10 @@ public class RotaryActuatorDifferentialForwardKinematics implements JointPairFor
       this.vectorToSecondJointFromFirstJoint = vectorToSecondJointFromFirstJoint;
       this.useTrigonometricForwardApproximations = useTrigonometricForwardApproximations;
       this.rollIsFirstJoint = rollIsFirstJoint;
+      this.rollLowerLimit = rollLowerLimit;
+      this.rollUpperLimit = rollUpperLimit;
+      this.pitchLowerLimit = pitchLowerLimit;
+      this.pitchUpperLimit = pitchUpperLimit;
       // this is the frame after the first joint.
       frameAfterFirstJoint = new ReferenceFrame("frameAfterFirstJoint", baseFrame)
       {
@@ -316,5 +338,29 @@ public class RotaryActuatorDifferentialForwardKinematics implements JointPairFor
    public RotaryActuatorDifferentialMotorMechanism getRightSpineMotorMechanism()
    {
       return rightActuatorMechanism;
+   }
+
+   @Override
+   public double getRollJointLowerLimit()
+   {
+      return rollLowerLimit;
+   }
+
+   @Override
+   public double getRollJointUpperLimit()
+   {
+      return rollUpperLimit;
+   }
+
+   @Override
+   public double getPitchJointUpperLimit()
+   {
+      return pitchUpperLimit;
+   }
+
+   @Override
+   public double getPitchJointLowerLimit()
+   {
+      return pitchLowerLimit;
    }
 }

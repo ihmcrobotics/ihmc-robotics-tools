@@ -1,6 +1,7 @@
 package us.ihmc.robotics.kinematics.rotaryDifferential;
 
 import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
+import us.ihmc.robotics.kinematics.jointPair.DifferentialKinematicsSpecification;
 
 /**
  * These are the kinematics that describe a differential joint where there are two rotary actuators that are rigidly attached to the child link. For this
@@ -17,7 +18,7 @@ import us.ihmc.euclid.tuple3D.interfaces.Vector3DReadOnly;
  * The first joint is the first joint that is rigidly attached to the base. The second joint follows it, and is rigidly attached to the child.
  * </p>
  */
-public interface RotaryActuatorDifferentialKinematicsSpecifications
+public interface RotaryActuatorDifferentialKinematicsSpecifications extends DifferentialKinematicsSpecification
 {
    /**
     * This is the vector in 3D from the first joint to the left rod end attachment in the base link.
@@ -49,10 +50,6 @@ public interface RotaryActuatorDifferentialKinematicsSpecifications
     */
    Vector3DReadOnly getVectorToRightActuatorRodEndAttachmentFromActuator();
 
-   Vector3DReadOnly getVectorToSecondJointFromFirstJoint();
-
-   boolean isTheFirstJointRoll();
-
    /**
     * This is the total length of the left tie rod, which goes from the center of one rod end to the center of the other rod end.
     */
@@ -63,23 +60,5 @@ public interface RotaryActuatorDifferentialKinematicsSpecifications
     */
    double getRightTieRodLength();
 
-   /**
-    * @return lower joint limit in radians for the first joint, assuming the second joint is ignored (box constraints).
-    */
-   double getFirstJointLowerLimit();
 
-   /**
-    * @return upper joint limit in radians for the first joint, assuming the second joint is ignored (box constraints).
-    */
-   double getFirstJointUpperLimit();
-
-   /**
-    * @return lower joint limit in radians for the second joint, assuming the first joint is ignored (box constraints).
-    */
-   double getSecondJointLowerLimit();
-
-   /**
-    * @return upper joint limit in radians for the second joint, assuming the first joint is ignored (box constraints).
-    */
-   double getSecondJointUpperLimit();
 }
