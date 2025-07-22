@@ -22,10 +22,11 @@ testDependencies {
 
 examplesDependencies {
    api(ihmc.sourceSetProject("main"))
-   api("us.ihmc:euclid-frame:0.22.3")
-   api("us.ihmc:euclid-geometry:0.22.3")
-   api("us.ihmc:ihmc-yovariables:0.13.6")
-   api("us.ihmc:simulation-construction-set:0.25.3")
+
+   api("us.ihmc:euclid-frame:0.22.4")
+   api("us.ihmc:euclid-geometry:0.22.4")
+   api("us.ihmc:ihmc-yovariables:0.13.4")
+   api("us.ihmc:simulation-construction-set:0.25.3") // SCS1
 }
 
 examplesTestDependencies{
