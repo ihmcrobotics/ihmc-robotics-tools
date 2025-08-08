@@ -15,28 +15,28 @@ public class MutableState implements State
    private Runnable onExit;
    private DoublePredicate isDone;
 
-   /** @inherit-doc */
+   /** {@inheritDoc} */
    @Override
    public void onEntry()
    {
       if (onEntry != null) onEntry.run();
    }
 
-   /** @inherit-doc */
+   /** {@inheritDoc} */
    @Override
    public void doAction(double timeInState)
    {
       if (doAction != null) doAction.accept(timeInState);
    }
 
-   /** @inherit-doc */
+   /** {@inheritDoc} */
    @Override
    public void onExit(double timeInState)
    {
       if (onExit != null) onExit.run();
    }
 
-   /** @inherit-doc */
+   /** {@inheritDoc} */
    @Override
    public boolean isDone(double timeInState)
    {

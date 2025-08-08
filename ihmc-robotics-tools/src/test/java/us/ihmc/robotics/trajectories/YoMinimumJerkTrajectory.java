@@ -150,7 +150,7 @@ public class YoMinimumJerkTrajectory
     * Finds the maximum absolute value of the velocity and acceleration of the MinimumJerkTrajectory from the given current time to the Trajectories final time.
     *
     * @deprecated
-    * @param t double : Time to start looking for a maximum velocity and acceleration.
+    * @param currentTime double : Time to start looking for a maximum velocity and acceleration.
     * @param maximums double[2] : {max velocity, max acceleration}
     */
    public void findMaxVelocityAndAccel(double currentTime, double[] maximums)
@@ -204,7 +204,7 @@ public class YoMinimumJerkTrajectory
     * The suggested Tf will always be >= the given currentTime, and always be >= Tf.
     *
     * @deprecated
-    * @param t double: current time
+    * @param currentTime double: current time
     * @param maxV double: maximum velocity to use
     * @param maxA double: maximum acceleration to use
     * @return double

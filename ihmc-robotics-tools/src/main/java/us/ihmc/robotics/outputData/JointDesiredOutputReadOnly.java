@@ -144,7 +144,7 @@ public interface JointDesiredOutputReadOnly
    /**
     * <p>
     * This allows to specify a desired velocity scaling for the joint level controller. In the simplest
-    * for the joint control law contains a damping / velocity term that looks like this:</br>
+    * for the joint control law contains a damping / velocity term that looks like this:<br>
     * damping * (velocityScaling * qd_d - qd)
     * </p>
     * By default this parameter should be set to 1.0 but can be set to a value between 0.0 and 1.0. If

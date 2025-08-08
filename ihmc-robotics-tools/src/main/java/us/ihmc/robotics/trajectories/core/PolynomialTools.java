@@ -37,14 +37,12 @@ public class PolynomialTools
       return coeff;
    }
 
-
    /**
     * Returns the order-th derivative of the xPowers vector at value x (Note: does NOT return the
     * YoPolynomials order-th derivative at x)
     *
     * @param order
     * @param x
-    * @return
     */
    public static void getXPowersDerivativeVector(double[] xPowersToPack, DMatrixRMaj xPowersDerivativeVectorToPack, int order, double x, int numberOfCoefficients)
    {

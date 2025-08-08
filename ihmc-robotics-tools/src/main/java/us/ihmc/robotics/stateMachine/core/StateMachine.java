@@ -20,14 +20,12 @@ import us.ihmc.yoVariables.variable.YoEnum;
  * <li>{@link EventBasedStateMachineFactory}: factory for creating a state machine which state
  * transitions are trigger by firing events. States must implement {@link EventState}.
  * </ul>
- * </p>
  * <p>
  * Once created, the states and transitions of a state machine are final, they cannot be modified.
- * </p>
- * 
- * @author Sylvain
+ *
  * @param <K> Type of {@link Enum} that lists the potential states.
  * @param <S> Type of {@link State} that is contained in the state machine.
+ * @author Sylvain
  */
 public class StateMachine<K extends Enum<K>, S extends State>
 {

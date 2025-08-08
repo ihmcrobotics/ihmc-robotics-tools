@@ -9,7 +9,6 @@ import us.ihmc.yoVariables.variable.YoDouble;
  * <p>
  * A clock is used to easily keep track of the time of the last state change and the time spent in a
  * state.
- * </p>
  * <p>
  * Three implementations are provided via state constructors:
  * <ul>
@@ -19,8 +18,7 @@ import us.ihmc.yoVariables.variable.YoDouble;
  * <li>{@link #yoClock(DoubleProvider, String, YoRegistry)}: Provides a clock implementation
  * backed by {@code YoDouble}.
  * </ul>
- * </p>
- * 
+ *
  * @author Sylvain
  */
 public interface StateMachineClock

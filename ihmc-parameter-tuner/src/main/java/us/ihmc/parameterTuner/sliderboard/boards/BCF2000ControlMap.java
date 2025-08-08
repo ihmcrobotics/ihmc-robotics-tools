@@ -5,16 +5,14 @@ import us.ihmc.parameterTuner.sliderboard.MidiControlMap;
 /**
  * Implementation of the {@link MidiControlMap} for the BCF2000 sliderboard.
  * <p>
- * Indexing of the buttons and sliders on the board is as follows:</br>
- *  - The sliders 1-8 map to the physical sliders on the board.</br>
- *  - The sliders 9-16 map to the knobs on the board.</br>
- *  - The buttons 1-16 map to the buttons below the knobs on the board.</br>
- *  - The buttons 17-20 map the buttons in the bottom right of the board.</br>
- *  - The buttons 21-28 map the knobs as they can be used as buttons as well.
- * </p>
+ * Indexing of the buttons and sliders on the board is as follows:<br>
+ * - The sliders 1-8 map to the physical sliders on the board.<br>
+ * - The sliders 9-16 map to the knobs on the board.<br>
+ * - The buttons 1-16 map to the buttons below the knobs on the board.<br>
+ * - The buttons 17-20 map the buttons in the bottom right of the board.<br>
+ * - The buttons 21-28 map the knobs as they can be used as buttons as well.
  *
  * @author Georg Wiedebach
- *
  */
 public class BCF2000ControlMap implements MidiControlMap
 {

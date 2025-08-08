@@ -29,19 +29,16 @@ import us.ihmc.yoVariables.variable.YoVariable;
  * Unlike {@link StateMachineFactory}, this factory configures the state machine to work with an
  * event-based framework. Instead of configuring transitions with user-defined conditions, the user
  * can define the response of the state machine when a specific event is fired.
- * </p>
  * <p>
  * Events can be pretty much any object. However, it is recommended to use enums which provide a
  * human readable type. For instance, a good practice is to use enum like {@code MyStateMachineEvent
  * {ALL_GOOD, FAILED}} where the name of the enum clearly indicates it is used for events only and
  * the constants indicates some status.
- * </p>
  * <p>
  * Aside the fact that transitions are triggered via events, the state machine works the way as a
  * state machine created using {@link StateMachineFactory}. The user will have to call
  * {@link StateMachine#doActionAndTransition()} on a regular basis to run the active state and
  * perform transitions.
- * </p>
  * <p>
  * Here is an example for creating a simple state machine that represents the main usecase of this
  * factory:
@@ -59,12 +56,10 @@ import us.ihmc.yoVariables.variable.YoVariable;
  * <li>Create the state machine:<br>
  * {@code StateMachine<StateEnum, State> myStateMachine = factory.build(StateEnum.A);}
  * </ol>
- * </p>
- * 
- * @author Sylvain
  *
  * @param <K> Type of {@link Enum} that lists the potential states.
  * @param <S> Type of {@link State} that is contained in the state machine.
+ * @author Sylvain
  */
 public class EventBasedStateMachineFactory<K extends Enum<K>, S extends EventState>
 {

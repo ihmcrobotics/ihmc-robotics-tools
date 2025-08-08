@@ -37,14 +37,11 @@ import org.ejml.interfaces.decomposition.TridiagonalSimilarDecomposition_F64;
  * David S. Watkins, "Fundamentals of Matrix Computations," Second Edition. page 377-385
  * </p>
  *
- * @see org.ejml.alg.dense.decomposition.eig.symm.SymmetricQrAlgorithm
- * @see org.ejml.alg.dense.decomposition.hessenberg.TridiagonalDecompositionHouseholder_D64
- *
  * @author Peter Abeles
- * 
- * Patched for IHMC to reduce garbage generation
- * 
+ *       Patched for IHMC to reduce garbage generation
  * @author Sylvain Bertrand
+ * @see SymmetricQrAlgorithm_DDRM
+ * @see TridiagonalSimilarDecomposition_F64
  */
 public class SymmetricQRAlgorithmDecomposition_D64GCFree implements EigenDecomposition_F64<DMatrixRMaj>
 {

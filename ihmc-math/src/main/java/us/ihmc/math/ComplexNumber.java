@@ -457,7 +457,7 @@ public class ComplexNumber implements Settable<ComplexNumber>
    /**
     * Principal branch of the ComplexNumber logarithm of this ComplexNumber.
     * (doesn't change this ComplexNumber).
-    * The principal branch is the branch with -pi < arg <= pi.
+    * The principal branch is the branch with -pi &lt; arg &lt;= pi.
     *
     * @return log(z) where z is this ComplexNumber.
     */
@@ -469,7 +469,7 @@ public class ComplexNumber implements Settable<ComplexNumber>
    /**
     * ComplexNumber square root (doesn't change this ComplexNumber).
     * Computes the principal branch of the square root, which
-    * is the value with 0 <= arg < pi.
+    * is the value with 0 &lt;= arg &lt; pi.
     *
     * @return sqrt(z) where z is this ComplexNumber.
     */

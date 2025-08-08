@@ -71,12 +71,12 @@ public class MatrixExponentialCalculator
     * Calculate matrix exponential of a square matrix.
     *
     * A scaled Pade approximation algorithm is used.
-    * The algorithm has been directly translated from Golub & Van Loan "Matrix Computations",
+    * The algorithm has been directly translated from Golub &amp; Van Loan "Matrix Computations",
     * algorithm 11.3.1. Special Horner techniques from 11.2 are also used to minimize the number
     * of matrix multiplications.
     *
+    * @param result matrix exponential of A
     * @param A square matrix
-    * @return matrix exponential of A
     */
    public void compute(DMatrixRMaj result, DMatrixRMaj A)
    {

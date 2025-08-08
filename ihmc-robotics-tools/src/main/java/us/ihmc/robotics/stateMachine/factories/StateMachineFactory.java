@@ -35,16 +35,13 @@ import us.ihmc.yoVariables.variable.YoEnum;
  * <li>Create the state machine:<br>
  * {@code StateMachine<StateEnum, State> myStateMachine = factory.build(StateEnum.A);}
  * </ol>
- * </p>
  * <p>
  * Please take a look at the factory which provides a different way of configuring a state machine:
  * {@link EventBasedStateMachineFactory}.
- * </p>
- * 
- * @author Sylvain
  *
  * @param <K> Type of {@link Enum} that lists the potential states.
  * @param <S> Type of {@link State} that is contained in the state machine.
+ * @author Sylvain
  */
 public class StateMachineFactory<K extends Enum<K>, S extends State>
 {
