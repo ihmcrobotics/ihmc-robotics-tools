@@ -15,7 +15,7 @@ mainDependencies {
    api("us.ihmc:ihmc-robotics-tools:source")
    api("org.ejml:ejml-simple:0.39")
    api("gov.nist.math:jama:1.0.3")
-   api("us.ihmc:ihmc-native-library-loader:2.0.4")
+   api("us.ihmc:ihmc-native-library-loader:2.0.6")
 }
 
 linearAlgebraDependencies {
