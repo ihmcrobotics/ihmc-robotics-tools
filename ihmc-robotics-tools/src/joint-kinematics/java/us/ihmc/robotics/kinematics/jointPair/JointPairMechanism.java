@@ -134,8 +134,8 @@ public class JointPairMechanism
       checkNaN(pitchTorque);
       checkNaN(rollTorque);
 
-      rollAngle = MathTools.clamp(forwardKinematics.getRollJointLowerLimit(), forwardKinematics.getRollJointUpperLimit());
-      pitchAngle = MathTools.clamp(forwardKinematics.getPitchJointLowerLimit(), forwardKinematics.getPitchJointUpperLimit());
+      rollAngle = MathTools.clamp(rollAngle, forwardKinematics.getRollJointLowerLimit(), forwardKinematics.getRollJointUpperLimit());
+      pitchAngle = MathTools.clamp(pitchAngle, forwardKinematics.getPitchJointLowerLimit(), forwardKinematics.getPitchJointUpperLimit());
 
       forwardKinematics.computeActuatorPositions(rollAngle, pitchAngle);
       actuatorDataToPack.setRightPosition(forwardKinematics.getRightActuatorPosition());
