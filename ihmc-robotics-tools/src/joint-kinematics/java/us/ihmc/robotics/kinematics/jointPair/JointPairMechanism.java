@@ -2,6 +2,7 @@ package us.ihmc.robotics.kinematics.jointPair;
 
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.CommonOps_DDRM;
+import us.ihmc.commons.MathTools;
 import us.ihmc.robotics.kinematics.jointPair.data.interfaces.JointPairActuatorDataBasics;
 import us.ihmc.robotics.kinematics.jointPair.data.interfaces.JointPairActuatorDataReadOnly;
 import us.ihmc.robotics.kinematics.jointPair.data.interfaces.JointPairJointDataBasics;
@@ -132,6 +133,9 @@ public class JointPairMechanism
       checkNaN(rollVelocity);
       checkNaN(pitchTorque);
       checkNaN(rollTorque);
+
+      rollAngle = MathTools.clamp(rollAngle, forwardKinematics.getRollJointLowerLimit(), forwardKinematics.getRollJointUpperLimit());
+      pitchAngle = MathTools.clamp(pitchAngle, forwardKinematics.getPitchJointLowerLimit(), forwardKinematics.getPitchJointUpperLimit());
 
       forwardKinematics.computeActuatorPositions(rollAngle, pitchAngle);
       actuatorDataToPack.setRightPosition(forwardKinematics.getRightActuatorPosition());
